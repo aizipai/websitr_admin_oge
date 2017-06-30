@@ -1,0 +1,11 @@
+
+***babel-polyfill
+
+1. 安装 element-ui  并引入 main.js  注意引入  css   ‘element-ui/lib/theme-default/index.css’
+
+2. 使用 sass  安装 sass  sass-loader node-sass
+
+3. 使用 stylus 安装 stylus stylus-loader
+
+4. 引入font-awesome   import 'font-awesome/css/font-awesome.min.css'
+	fa fa-trash-o fa-lg
