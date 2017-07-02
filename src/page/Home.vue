@@ -39,7 +39,6 @@ export default{
 		width $w
 		float left
 	.b-content
-		background-color lightgreen
-		padding 20px
-
+		padding 0 30px
+		margin-left $w
 </style>

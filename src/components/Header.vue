@@ -71,15 +71,15 @@
 			border-bottom 1px solid transparent
 		.t-title
 			flex 1
-			padding-left 30px
+			margin-left 30px
 			line-height 80px
 			font-size 24px
 			font-weight 700
-			border-bottom 1px solid #777
+			border-bottom 1px solid #CCC
 		.b-info
 			line-height 80px
-			padding-right 30px
-			border-bottom 1px solid #777
+			margin-right 30px
+			border-bottom 1px solid #CCC
 			.t-name
 				margin-right 20px
 			.btn-logout
