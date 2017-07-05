@@ -17,8 +17,6 @@
 			</el-table-column>
 			<el-table-column prop="tourLevel" label="旅游团级别">
 			</el-table-column>
-			<el-table-column prop="status" label="status" >
-			</el-table-column>
 			<el-table-column prop="nameC" label="中文姓名" >
 			</el-table-column>
 			<el-table-column prop="nameE" label="资格证" >
@@ -77,7 +75,7 @@
 				</el-form-item>
 				<el-form-item label="导游资格证">
 					<el-upload
-					  action="https://jsonplaceholder.typicode.com/posts/"
+					  action="/api/admin/upload"
 					  list-type="picture-card"
 					  :on-preview="handlePictureWorkPreview"
 					  :on-remove="handleRemove">
@@ -114,7 +112,7 @@
 		<el-dialog title="修改" 
 		:visible.sync="editFormVisible"
 		ref="editForm">
-			<el-form :model="editForm" label-width="100px" ref="addForm">
+			<el-form :model="editForm" label-width="100px" ref="editForm">
 				<el-form-item label="旅游团级别">
 					<el-select v-model="editForm.tourLevel" placeholder="请选择旅游团级别">
  					   <el-option
