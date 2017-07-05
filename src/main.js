@@ -15,6 +15,10 @@ import '@/common/stylus/reset.styl'
 import store from './store'
 import Vuex from 'vuex'
 
+import axios from 'axios'
+
+Vue.prototype.$axios = axios
+
 
 Vue.use(ElementUI)
 Vue.use(Vuex)
