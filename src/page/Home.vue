@@ -23,11 +23,6 @@ export default{
 	components:{
 		BHeader,
 		BSidebar
-	},
-	data(){
-		return{
-
-		}
 	}
 }
 	

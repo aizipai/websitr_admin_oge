@@ -64,7 +64,16 @@
 					<el-input v-model="addFormSendData.carType" placeholder="请输入游览车车款"></el-input>
 				</el-form-item>
 				<el-form-item label="游览车图片">
-
+					<el-upload
+					  action="/api/admin/upload"
+					  list-type="picture-card"
+					  :on-success="handlePictureWorkSuccess"
+					  :on-remove="handleRemove">
+					  <i class="el-icon-plus"></i>
+					</el-upload>
+					<el-dialog v-model="dialogVisible" size="tiny">
+					  <img width="100%" :src="dialogWorkImageUrl" alt="">
+					</el-dialog>
 				</el-form-item>
 				<el-form-item label="游览车座位数">
 					<el-input-number  v-model="addFormSendData.carSeatNum " 
@@ -140,8 +149,8 @@
 	export default{
 		data(){
 			return{
-				getCarsUrl: '/api/car/findAllCar',
-				getCarsParams: {
+				getAllDataUrl: '/api/car/findAllCar',
+				getAllDataParams: {
 					page: 1,
 					limit: 10
 				},
@@ -172,8 +181,12 @@
 					carRemark:"",
 					carSeatNum:"",
 					carType:"",
-					tourLevel:''
+					tourLevel:'',
+					carPicture:'',
 				},
+				pictureArr:[],
+				dialogVisible:false,
+				dialogWorkImageUrl: '',
 				//编辑部分所用数据
 				editFormVisible: false,
 				editFormCarUrl: '/api/car/addFormValue',
@@ -184,6 +197,13 @@
 			}
 		},
 		methods:{
+			handleRemove(file,files){
+				
+			},
+			handlePictureWorkSuccess(file){
+				this.pictureArr.push(file.url)
+				this.addFormSendData.carPicture = this.pictureArr.join(',')
+			},
 			handleDel(){
 				console.log(222)
 			},
@@ -200,15 +220,23 @@
 				this.$refs[form].validate((valid)=>{
 					if(valid){
 						this.$axios.post(this[_url],this[_params]).then((res)=>{
-							console.log(res)
+							var result = res.data
+							if(result.ok){
+								this.$alert(result.msg, '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  window.location.reload()
+          							}
+        						});
+							}
 						})
 					}else{
 
 					}
 				})
 			},
-			getCars(){
-				this.$axios.get(this.getCarsUrl,this.getCarsParams).then((res)=>{
+			getAllData(){
+				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
 					var result = res.data
 					console.log(result)
 					this.carsData = this.handleData(result.data)
@@ -240,7 +268,7 @@
 			}
 		},
 		mounted(){
-			this.getCars()
+			// this.getAllData()
 		}
 	}
 </script>

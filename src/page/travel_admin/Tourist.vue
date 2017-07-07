@@ -87,7 +87,7 @@
 				</el-form-item>
 				<el-form-item label="导游照片">
 					<el-upload
-					  action="https://jsonplaceholder.typicode.com/posts/"
+					  action="/api/admin/upload"
 					  list-type="picture-card"
 					  :on-preview="handlePictureSelfPreview"
 					  :on-remove="handleRemove">
@@ -221,7 +221,6 @@
 					guideLicense: [],
 					guideSelfDescription:'自我介绍',
 
-					fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
 				},
 				dialogWorkImageUrl: '',
 				dialogSelfImageUrl: '',
