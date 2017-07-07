@@ -11,25 +11,28 @@
 		
 		<!-- 列表部分 -->
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="carId" label="ID">
+			<el-table-column prop="optId" label="ID">
 			</el-table-column>
-			<el-table-column prop="carLuggageNum" label="carLuggageNum">
+			<el-table-column prop="optAreaId" label="所在地区">
 			</el-table-column>
-			<el-table-column prop="carName" label="carName">
+			<el-table-column prop="optName" label="活动名称">
 			</el-table-column>
-			<el-table-column prop="carNo" label="carNo">
+			<el-table-column prop="optStartTime" label="活动开始时间">
 			</el-table-column>
-			<el-table-column prop="carPicture" label="carPicture">
-				<template scope="img_url">
-					<img src="carPicture" title="carPicture">
+			<el-table-column prop="optEndTime" label="活动结束时间">
+			</el-table-column>
+			<el-table-column prop="optPrice" label="价格">
+			</el-table-column>
+			<el-table-column prop="optPicture" label="活动图片">
+				<template scope="scope">
+					<img :src="scope.row.optPicture" title="活动图片" :style="{width:imgWidth,height:imgHeight}">
 				</template>
 			</el-table-column>
-			<el-table-column prop="carRemark" label="carRemark">
+			<el-table-column prop="optRemark" label="备注">
 			</el-table-column>
-			<el-table-column prop="carSeatNum" label="carSeatNum">
+			<el-table-column prop="optAttention" label="注意事项">
 			</el-table-column>
-			<el-table-column prop="carType" label="carType">
-			</el-table-column>
+			
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -55,7 +58,7 @@
  	 				</el-select>
 				</el-form-item>
 				<el-form-item label="所在地区">
-					<el-select v-model="addFormSendData.hotelAreaId" placeholder="请选择所在地区">
+					<el-select v-model="addFormSendData.optAreaId" placeholder="请选择所在地区">
  					  <el-option
  					    v-for="(item,index) in hotelArea"
  					    :key="item.areaId"
@@ -64,14 +67,38 @@
  					  </el-option>
  	 				</el-select>
  	 			</el-form-item>
-				<el-form-item label="酒店名称">
-					<el-input v-model="addFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
+				<el-form-item label="活动名称">
+					<el-input v-model="addFormSendData.optName" placeholder="请输入活动名称"></el-input>
 				</el-form-item>
-				<el-form-item label="酒店图片">
+				<el-form-item label="活动时间">
+					<el-row>
+						<el-col :span="11">
+							<el-date-picker
+    						  v-model="addFormSendData.optStartTime"
+    						  type="datetime"
+    						  placeholder="选择日期时间">
+   							 </el-date-picker>
+						</el-col>
+						<el-col :span="2">——</el-col>
+						<el-col :span="11">
+							<el-col :span="11">
+							<el-date-picker
+    						  v-model="addFormSendData.optEndTime"
+    						  type="datetime"
+    						  placeholder="选择日期时间">
+   							 </el-date-picker>
+						</el-col>
+						</el-col>
+					</el-row>
+				</el-form-item>
+				<el-form-item label="价格">
+					<el-input-number v-model="addFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
+				</el-form-item>
+				<el-form-item label="活动图片">
 					<el-upload
 					  action="/api/admin/upload"
 					  list-type="picture-card"
-					  :on-success="handlePictureWorkSuccess"
+					  :on-success="handlePictureSuccess"
 					  :on-remove="handleRemove">
 					  <i class="el-icon-plus"></i>
 					</el-upload>
@@ -79,21 +106,11 @@
 					  <img width="100%" :src="dialogWorkImageUrl" alt="">
 					</el-dialog>
 				</el-form-item>
-				<el-form-item label="房间数量">
-					<el-input-number v-model="addFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
+				<el-form-item label="备注">
+					<el-input type="textarea" v-model="addFormSendData.optRemark"></el-input>
 				</el-form-item>
-				<el-form-item label="包房数量">
-					<el-input-number  v-model="addFormSendData.hotelCharteredRoomNum" 
-					placeholder="请输入包房数量"
-					:min='0'></el-input-number >
-				</el-form-item>
-				<el-form-item label="餐厅名称">
-					<el-input  v-model="addFormSendData.hotelRestaurantName" 
-					placeholder="请输入餐厅名称"
-					></el-input>
-				</el-form-item>
-				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="addFormSendData.hotelRemark"></el-input>
+				<el-form-item label="注意事项">
+					<el-input type="textarea" v-model="addFormSendData.optAttention"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -109,38 +126,68 @@
 			<el-form :model="editFormSendData" label-width="100px" ref="editForm">
 				<el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
- 				  <el-option
- 				    v-for="item in tourLevelData"
- 				    :key="item.value"
- 				    :label="item.label"
- 				    :value="item.value">
- 				  </el-option>
- 	 			</el-select>
+ 					  <el-option
+ 					    v-for="item in tourLevelData"
+ 					    :key="item.value"
+ 					    :label="item.label"
+ 					    :value="item.value">
+ 					  </el-option>
+ 	 				</el-select>
 				</el-form-item>
-				<el-form-item label="游览车名称">
-					<el-input v-model="editFormSendData.carName" placeholder="请输入游览车名称"></el-input>
+				<el-form-item label="所在地区">
+					<el-select v-model="editFormSendData.optAreaId" placeholder="请选择所在地区">
+ 					  <el-option
+ 					    v-for="(item,index) in hotelArea"
+ 					    :key="item.areaId"
+ 					    :label="item.areaName"
+ 					    :value="item.areaId">
+ 					  </el-option>
+ 	 				</el-select>
+ 	 			</el-form-item>
+				<el-form-item label="活动名称">
+					<el-input v-model="editFormSendData.optName" placeholder="请输入活动名称"></el-input>
 				</el-form-item>
-				<el-form-item label="游览车车牌">
-					<el-input v-model="editFormSendData.carNo" placeholder="请输入游览车车牌"></el-input>
+				<el-form-item label="活动时间">
+					<el-row>
+						<el-col :span="11">
+							<el-date-picker
+    						  v-model="editFormSendData.optStartTime"
+    						  type="datetime"
+    						  placeholder="选择日期时间">
+   							 </el-date-picker>
+						</el-col>
+						<el-col :span="2">——</el-col>
+						<el-col :span="11">
+							<el-col :span="11">
+							<el-date-picker
+    						  v-model="editFormSendData.optEndTime"
+    						  type="datetime"
+    						  placeholder="选择日期时间">
+   							 </el-date-picker>
+						</el-col>
+						</el-col>
+					</el-row>
 				</el-form-item>
-				<el-form-item label="游览车车款">
-					<el-input v-model="editFormSendData.carType" placeholder="请输入游览车车款"></el-input>
+				<el-form-item label="价格">
+					<el-input-number v-model="editFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
-				<el-form-item label="游览车图片">
-
+				<el-form-item label="活动图片">
+					<el-upload
+					  action="/api/admin/upload"
+					  list-type="picture-card"
+					  :on-success="handlePictureSuccess"
+					  :on-remove="handleRemove">
+					  <i class="el-icon-plus"></i>
+					</el-upload>
+					<el-dialog v-model="dialogVisible" size="tiny">
+					  <img width="100%" :src="dialogWorkImageUrl" alt="">
+					</el-dialog>
 				</el-form-item>
-				<el-form-item label="游览车座位数">
-					<el-input-number  v-model="editFormSendData.carSeatNum " 
-					placeholder="请输入游览车座位数"
-					:min='1' :max='7'></el-input-number >
+				<el-form-item label="备注">
+					<el-input type="textarea" v-model="editFormSendData.optRemark"></el-input>
 				</el-form-item>
-				<el-form-item label="游览车行李数">
-					<el-input-number  v-model="editFormSendData.carLuggage" 
-					placeholder="请输入游览车行李数"
-					:min='1' :max='7'></el-input-number >
-				</el-form-item>
-				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="editFormSendData.carRemark"></el-input>
+				<el-form-item label="注意事项">
+					<el-input type="textarea" v-model="editFormSendData.optAttention"></el-input>
 				</el-form-item>
 				
 			</el-form>
@@ -156,7 +203,7 @@
 	export default{
 		data(){
 			return{
-				getAllDataUrl: '/api/hotel/getHotelsByAreaIdr',
+				getAllDataUrl: '/api/optionalActivities/findAllOptionalActivities',
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -172,20 +219,25 @@
 				],
 				addLoading:false,
 
+				imgWidth:'100px',
+				imgHeight:'100px',
+
+
 				//新增部分所用数据
 				addFormVisible: false,
 
 				addFormOriginData:{},
-				addFormUrl: '/api/hotel/addFormValue',
+				addFormUrl: '/api/optionalActivities/addFormValue',
 				addFormSendData:{
-					hotelCharteredRoomNum:"",
-					hotelHomeNum:"",
-					hotelName:"",
-					hotelPicture:"",
-					hotelRemark:"",
-					hotelRestaurantName:"",
+					optAreaId:"",
+					optAttention:"",
+					optEndTime:"",
+					optName:"",
+					optPicture:"",
+					optPrice:"",
+					optRemark:'',
+					optStartTime:'',
 					tourLevel:'',
-					hotelPicture:''
 				},
 				//上传图片部分
 				pictureArr: [],
@@ -194,10 +246,13 @@
 
 				//编辑部分所用数据
 				editFormVisible: false,
-				editFormCarUrl: '/api/hotel/addFormValue',
+				editFormUrl: '/api/optionalActivities/addFormValue',
 				editForm:{},
 				editFormOriginData:{},
 				editFormSendData:{},
+
+				//删除活动
+				delUrl: '/optionalActivities/del',
 
 			}
 		},
@@ -207,24 +262,29 @@
 				this.$axios.get('/api/area/getAll').then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
-						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
+
 				})
 			},
 			handleRemove(file,files){
 				
 			},
-			handlePictureWorkSuccess(file){
+			handlePictureSuccess(file){
 				this.pictureArr.push(file.url)
-				this.addFormSendData.hotelPicture = this.pictureArr.join(',')
+				this.addFormSendData.optPicture = this.pictureArr.join(',')
 			},
-			handleDel(){
-				console.log(222)
+			handleDel(index,row){
+				
+				var _url = this.delUrl + '?optId='+row.optId
+				this.$axios.get(_url).then((res)=>{
+					var result = res.data
+					console.log(result)
+				})
+
 			},
 			handleEdit(index, row){
-				console.log(111)
 				this.editFormVisible = true
 				this.editFormSendData = Object.assign({},row)
 			},
@@ -237,19 +297,37 @@
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
-						this.$axios.post(this[_url],this[_params]).then((res)=>{
-							console.log(res)
-						})
+						var result = res.data
+							if(result.ok){
+								this.$alert(result.msg, '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  window.location.reload()
+          							}
+        						});
+							}else{
+								this.$alert(result.msg, '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  
+          							}
+        						});
+							}
 					}else{
 
 					}
 				})
 			},
 			getAllData(){
+				this.listLoading = true
 				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
+					this.listLoading = false
 					var result = res.data
-					this.allData = this.handleData(result.data)
+					this.allData = result.data
+				}).catch(()=>{
+					this.getAllData()
 				})
+
 			},
 			handleData(datas){
 				datas = Object.prototype.toString.call(datas) == '[object Array]'? datas : [datas]
@@ -276,7 +354,7 @@
 			}
 		},
 		mounted(){
-			// this.getAllData()
+			this.getAllData()
 			this.getHotelArea()
 		}
 	}

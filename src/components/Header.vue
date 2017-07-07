@@ -1,6 +1,6 @@
 <template>
 	<div class="b-header">
-  		<a href="#" class="t-logo">ADMIN</a>
+  		<a href="#" class="t-logo">埃及旅游</a>
   		<div class='t-title'>{{title}}</div>
   		<div class='b-info'>
   			<span class="t-name">你好，{{userName}}</span>
@@ -31,7 +31,7 @@
 		props:[],
 		data(){
 			return{
-				title: '未知',
+				title: '运营中心',
 				userName: '嘟嘟',
 				userId: '123',
 				dialogVisible: false
@@ -69,6 +69,8 @@
 			background-color #FFD266
 			text-align center
 			border-bottom 1px solid transparent
+			color #fff
+			
 		.t-title
 			flex 1
 			margin-left 30px

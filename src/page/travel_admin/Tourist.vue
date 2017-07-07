@@ -293,8 +293,10 @@
      		  this.guideLicense.push(file.url)
      		},
      		getGuides(){
+     			this.listLoading = true
      			var params = {page:this.page,limit: this.limit}
      			this.$axios.get('/api/guide/findAllGuide',params).then((res)=>{
+     				this.listLoading = false
      				let result = res.data
      				if(result.ok){
      					console.log(result.data)

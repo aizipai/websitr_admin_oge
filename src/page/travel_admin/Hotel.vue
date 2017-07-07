@@ -246,7 +246,9 @@
 				})
 			},
 			getAllData(){
+				this.listLoading = true
 				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
+					this.listLoading = false
 					var result = res.data
 					this.allData = this.handleData(result.data)
 				})

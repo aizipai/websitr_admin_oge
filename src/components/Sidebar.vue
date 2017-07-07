@@ -6,7 +6,7 @@
   			<template 
   			v-if="item.children">
   				<el-submenu :index='item.path'>
-  					<template slot="title"><i class="fa fa-weixin"></i>{{item.name}}</template>
+  					<template slot="title"><i class="el-icon-menu"></i>{{item.name}}</template>
   					<template v-for="childItem in item.children">
   						<el-menu-item :index="childItem.path">{{childItem.name}}</el-menu-item>
   					</template>
@@ -28,9 +28,9 @@
 		data(){
 			return{
 				menuData: [
-					{name: '导航一',path: '/useradmin'},
+					{name: '用户管理',path: '/useradmin'},
 					{
-						name: '导航二',
+						name: '行程管理',
 						path: '/jingdian',
 						children:[
 							{name:'景点',path:'/jingdian'},
@@ -43,8 +43,8 @@
 							{name:'资费活动',path:'/activity'},
 						]
 					},
-					{name: '导航三',path: '/rightadmin'},
-					{name: '导航四',path: '/commonpro'}
+					{name: '权限管理',path: '/rightadmin'},
+					{name: '公共栏目',path: '/commonpro'}
 				]
 			}
 		},

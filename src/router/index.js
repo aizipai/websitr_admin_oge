@@ -28,6 +28,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/',
+      redirect: {path:'/useradmin'}
+    },
+    {
         path: '/',
         component: Home,
         name: '导航一',
