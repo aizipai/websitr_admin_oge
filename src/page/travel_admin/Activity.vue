@@ -23,16 +23,17 @@
 			</el-table-column>
 			<el-table-column prop="optPrice" label="价格">
 			</el-table-column>
-			<el-table-column prop="optPicture" label="活动图片">
-				<template scope="scope">
-					<img :src="scope.row.optPicture" title="活动图片" :style="{width:imgWidth,height:imgHeight}">
-				</template>
+			<el-table-column prop="optPicture" label="酒店图片">
+				<template scope='scope'>
+					<template v-for='src in scope.row.optPicture'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}">
+					</template>
+				</template>	
 			</el-table-column>
 			<el-table-column prop="optRemark" label="备注">
 			</el-table-column>
 			<el-table-column prop="optAttention" label="注意事项">
 			</el-table-column>
-			
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -41,7 +42,16 @@
 			</el-table-column>
 		</el-table>
 		
-		
+		<!--新增界面-->
+		<el-dialog title="新增" 
+		:visible.sync="addFormVisible"
+		ref="addFormDialog">
+			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
+				
+			</el-form>
+			
+		</el-dialog>
+
 		<!--新增界面-->
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
@@ -81,13 +91,11 @@
 						</el-col>
 						<el-col :span="2">——</el-col>
 						<el-col :span="11">
-							<el-col :span="11">
 							<el-date-picker
     						  v-model="addFormSendData.optEndTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
    							 </el-date-picker>
-						</el-col>
 						</el-col>
 					</el-row>
 				</el-form-item>
@@ -95,16 +103,9 @@
 					<el-input-number v-model="addFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
 				<el-form-item label="活动图片">
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePictureSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog v-model="dialogVisible" size="tiny">
-					  <img width="100%" :src="dialogWorkImageUrl" alt="">
-					</el-dialog>
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="备注">
 					<el-input type="textarea" v-model="addFormSendData.optRemark"></el-input>
@@ -112,7 +113,7 @@
 				<el-form-item label="注意事项">
 					<el-input type="textarea" v-model="addFormSendData.optAttention"></el-input>
 				</el-form-item>
-			</el-form>
+				</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="submitForm('addForm')" :loading="addLoading">提交</el-button>
@@ -123,7 +124,7 @@
 		<el-dialog title="修改" 
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
-			<el-form :model="editFormSendData" label-width="100px" ref="editForm">
+			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
 				<el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
@@ -158,13 +159,11 @@
 						</el-col>
 						<el-col :span="2">——</el-col>
 						<el-col :span="11">
-							<el-col :span="11">
 							<el-date-picker
     						  v-model="editFormSendData.optEndTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
    							 </el-date-picker>
-						</el-col>
 						</el-col>
 					</el-row>
 				</el-form-item>
@@ -172,16 +171,9 @@
 					<el-input-number v-model="editFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
 				<el-form-item label="活动图片">
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePictureSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog v-model="dialogVisible" size="tiny">
-					  <img width="100%" :src="dialogWorkImageUrl" alt="">
-					</el-dialog>
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="备注">
 					<el-input type="textarea" v-model="editFormSendData.optRemark"></el-input>
@@ -189,18 +181,23 @@
 				<el-form-item label="注意事项">
 					<el-input type="textarea" v-model="editFormSendData.optAttention"></el-input>
 				</el-form-item>
-				
-			</el-form>
+				</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="submitForm('editForm')" :loading="addLoading">提交</el-button>
+				<el-button type="primary" @click.native="submitForm('editForm')" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
 
+
+	
 	</div>
 </template>
 <script>
+	import UploadImgs from '../../components/UploadImgs.vue'
 	export default{
+		components:{
+			UploadImgs
+		},
 		data(){
 			return{
 				getAllDataUrl: '/api/optionalActivities/findAllOptionalActivities',
@@ -208,8 +205,17 @@
 					page: 1,
 					limit: 10
 				},
+				imgWidth:'100px',
+				imgHeight:'100px',
+				reGetCount: 5,//获取失败重复获取数据次数
+				upLoadUrl:'/api/admin/upload',
+				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				imgsArr:[],//上传的所有图片
+
+				allData:[],
+
+
 				listLoading:false,
-				allData: [],
 				tourLevelData:[
 					{value: 1,label: '高端'},
 					{value: 0,label: '普通'}
@@ -219,14 +225,9 @@
 				],
 				addLoading:false,
 
-				imgWidth:'100px',
-				imgHeight:'100px',
-
-
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormOriginData:{},
 				addFormUrl: '/api/optionalActivities/addFormValue',
 				addFormSendData:{
 					optAreaId:"",
@@ -238,66 +239,108 @@
 					optRemark:'',
 					optStartTime:'',
 					tourLevel:'',
+					optId:''
 				},
+
 				//上传图片部分
 				pictureArr: [],
 				dialogVisible: false,
-				dialogWorkImageUrl: '',
 
-				//编辑部分所用数据
-				editFormVisible: false,
-				editFormUrl: '/api/optionalActivities/addFormValue',
-				editForm:{},
-				editFormOriginData:{},
-				editFormSendData:{},
+				//编辑数据
+				editFormVisible:false,
+				editFormSendData: {
+					optAreaId:"",
+					optAttention:"",
+					optEndTime:"",
+					optName:"",
+					optPicture:"",
+					optPrice:"",
+					optRemark:'',
+					optStartTime:'',
+					tourLevel:'',
+					optId:'',
+				},
+				editFormRules: {},
+				editLoading:false,
+				editFormUrl:'/api/optionalActivities/addFormValue',
 
-				//删除活动
-				delUrl: '/optionalActivities/del',
+				//删除
+				delUrl:'/api/optionalActivities/del/'
 
 			}
 		},
 		methods:{
+			handleUploadedImgs(uploadedImgs){
+				this.imgsArr = uploadedImgs
+			},
 			getHotelArea(){
 
 				this.$axios.get('/api/area/getAll').then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
+						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
+				})
+			},
+			
+			handleDel(index, row){
+				var id = row.optId
+				
 
-				})
-			},
-			handleRemove(file,files){
-				
-			},
-			handlePictureSuccess(file){
-				this.pictureArr.push(file.url)
-				this.addFormSendData.optPicture = this.pictureArr.join(',')
-			},
-			handleDel(index,row){
-				
-				var _url = this.delUrl + '?optId='+row.optId
-				this.$axios.get(_url).then((res)=>{
+				this.$confirm('确定删除？', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+        			this.$axios.get(this.delUrl+id).then((res)=>{
 					var result = res.data
-					console.log(result)
-				})
+					if(result.ok){
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  window.location.reload()
+          					}
+        				});
+					}else{
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  
+          					}
+        				});
+					}
+					})
+
+        		}).catch(() => {
+        		  this.$message({
+        		    type: 'info',
+        		    message: '已取消删除'
+        		  });          
+        		});	
 
 			},
 			handleEdit(index, row){
-				this.editFormVisible = true
+				
 				this.editFormSendData = Object.assign({},row)
+
+				this.existImgList = row.optPicture
+
+				this.editFormVisible = true
+				
 			},
 			submitForm(form){
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-
-
+						
+				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
-						var result = res.data
+						this.$axios.post(this[_url],this[_params]).then((res)=>{
+							const result = res.data
 							if(result.ok){
 								this.$alert(result.msg, '提示', {
           							confirmButtonText: '确定',
@@ -313,6 +356,7 @@
           							}
         						});
 							}
+						})
 					}else{
 
 					}
@@ -323,11 +367,8 @@
 				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
 					this.listLoading = false
 					var result = res.data
-					this.allData = result.data
-				}).catch(()=>{
-					this.getAllData()
+					this.allData = this.handleData(result.data)
 				})
-
 			},
 			handleData(datas){
 				datas = Object.prototype.toString.call(datas) == '[object Array]'? datas : [datas]
@@ -336,22 +377,25 @@
 				for(let i=0; i< datas.length; i++){
 					const row_data = datas[i]
 					const _row_data = {
-						carId: row_data.carId,
-						carLuggageNum: row_data.carLuggageNum,
-						carName: row_data.carName,
-						carNo: row_data.carNo,
-						carPicture: row_data.carPicture,
-						carRemark: row_data.carRemark,
-						carSeatNum: row_data.carSeatNum,
-						carType: row_data.carType,
-						status: row_data.status,
-						tourLevel:parseInt(row_data.status)
+						optAreaId:row_data.optAreaId,
+						optAttention:row_data.optAttention,
+						optEndTime:row_data.optEndTime,
+						optName:row_data.optName,
+						optPrice:row_data.optPrice,
+						optRemark:row_data.optRemark,
+						optStartTime:row_data.optStartTime,
+						tourLevel:row_data.tourLevel,
+						optId:row_data.optId,
+						optPicture: row_data.optPicture?row_data.optPicture.split(',') : [],
 					}
 					_data.push(_row_data)
 				}
 
 				return _data
-			}
+			},
+			arrToStr(arr,fenge=','){
+				return arr.join(fenge)
+			},
 		},
 		mounted(){
 			this.getAllData()
