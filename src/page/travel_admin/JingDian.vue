@@ -3,28 +3,27 @@
 		<div class="b-top">
 			<div class="t-tit">景点</div>
 			<el-button 
-				class="add-user"
+				class="add-attraction"
   				type="primary" 
   				size="small" 
   				@click="addFormVisible = true">添加</el-button>
 		</div>
 
-
-
 		<!--列表-->
-		<el-table :data="users" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="id" label="ID" width="55">
+		<el-table :data='allData' highlight-current-row v-loading="listLoading"  style="width: 100%;">
+			<el-table-column prop="attractionId" label="ID" width="55">
 			</el-table-column>
-			<el-table-column prop="name" label="姓名" width="120" >
+			<el-table-column prop="attractionName" label="景点名称" width="155">
 			</el-table-column>
-			<el-table-column prop="phone" label="电话" width="150" >
+			<el-table-column prop="attractionPicture" label="景点图片">
+				<template scope='scope'>
+					<template v-for='src in scope.row.attractionPicture'>
+						<img :src='src'>
+					</template>
+					
+				</template>	
 			</el-table-column>
-			<el-table-column prop="company" label="公司名称" width="200" >
-			</el-table-column>
-			<el-table-column prop="position" label="职位" width="120" >
-			</el-table-column>
-			<el-table-column prop="account" label="账号" min-width="180" >
-			</el-table-column>
+			
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -33,28 +32,18 @@
 			</el-table-column>
 		</el-table>
 
-
-
-
 		<!--新增界面-->
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
-		ref="addForm">
-			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="姓名" prop="name">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+		ref="addFormDialog">
+			<el-form :model="addFormSendData" label-width="80px" :rules="addFormRules" ref="addForm">
+				<el-form-item label="活动名称" prop="attractionName">
+					<el-input v-model="addFormSendData.attractionName"></el-input>
 				</el-form-item>
-				<el-form-item label="电话" prop="phone">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="公司" prop="company">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="职位" prop="position">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="账号" prop="count">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+				<el-form-item label="上传图片">
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -62,65 +51,203 @@
 				<el-button type="primary" @click.native="submitForm('addForm')" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
+
+		<!--新增界面-->
+		<el-dialog title="新增" 
+		:visible.sync="editFormVisible"
+		ref="editFormDialog">
+			<el-form :model="editFormSendData" label-width="80px" :rules="editFormRules" ref="editForm">
+				<el-form-item label="活动名称" prop="attractionName">
+					<el-input v-model="editFormSendData.attractionName"></el-input>
+				</el-form-item>
+				<el-form-item label="上传图片">
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="editFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="submitForm('editForm')" :loading="editLoading">提交</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
+
+	import UploadImgs from '../../components/UploadImgs.vue'
 	export default{
+		components:{
+			UploadImgs
+		},
 		data(){
 			return{
-				//
-				users:[
-					{
-						id: 1,
-						name: 'dudu',
-						phone: '12345678901',
-						compony: 'dudududu',
-						position: 'laoda',
-						account: '4321'
-					}
-				],
-				listLoading: false,
+				getAllDataUrl: '/api/attraction/findAllAttraction', //获取数据url
+				getAllDataParams: {page: 1,limit: 10},//获取数据参数
+				reGetCount: 5,//获取失败重复获取数据次数
 
-				addFormVisible: false,//新增界面是否显示
-				addLoading: false,
-				addFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					],
-					phone: [
-						{ required: true, message: '请输入电话号码', trigger: 'blur' }
-					],
-					company: [
-						{ required: true, message: '请输入公司名称', trigger: 'blur' }
-					],
-					position: [
-						{ required: true, message: '请输入职位', trigger: 'blur' }
-					],
-					count: [
-						{ required: true, message: '请输入账号', trigger: 'blur' }
-					]
+				upLoadUrl:'/api/admin/upload',
+				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				imgsArr:[],//上传的所有图片
+
+				allData:[],
+
+				//列表
+				listLoading:false,
+
+				
+				//添加数据
+				addFormVisible:false,
+				addFormSendData: {
+					attractionName:'',
+					attractionPicture:''
 				},
-				//新增界面数据
-				addForm: {
-					name: '',
-					phone: '',
-					company: '',
-					position: '',
-					count: ''
-				}
+				addFormRules: {},
+				addLoading:false,
+				addFormUrl:'/api/attraction/addFormValue',
+
+				//编辑数据
+				editFormVisible:false,
+				editFormSendData: {
+					attractionId:'',
+					attractionName:'',
+					attractionPicture:'',
+				},
+				editFormRules: {},
+				editLoading:false,
+				editFormUrl:'/api/attraction/addFormValue',
+
+				//删除
+				delUrl:'/api/attraction/del/',
+				
 			}
 		},
 		methods:{
-			submitForm(formName){
-				this.$refs[formName].validate((valid)=>{
-					if(valid){
-						alert('submit')
+			//处理上传的图片
+			handleUploadedImgs(uploadedImgs){
+				this.imgsArr = uploadedImgs
+			},
+			
+			//处理编辑
+			handleEdit(index, row){
+
+				this.editFormSendData = Object.assign({},row)
+
+				this.existImgList = row.attractionPicture
+
+				this.editFormVisible = true
+			},
+			handleDel(index, row){
+				var id = row.attractionId
+				
+
+				this.$confirm('确定删除？', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+        			this.$axios.get(this.delUrl+id).then((res)=>{
+					var result = res.data
+					if(result.ok){
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  window.location.reload()
+          					}
+        				});
 					}else{
-						console.log('error submit!')
-						return false
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  
+          					}
+        				});
+					}
+					})
+
+        		}).catch(() => {
+        		  this.$message({
+        		    type: 'info',
+        		    message: '已取消删除'
+        		  });          
+        		});	
+
+			},
+			//提交
+			submitForm(form){
+
+				var _url = form+'Url',
+						_params = form+'SendData'
+						
+				this[_params]['attractionPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)						
+
+				this.$refs[form].validate((valid)=>{
+					if(valid){
+						this.$axios.post(this[_url],this[_params]).then((res)=>{
+							const result = res.data
+							if(result.ok){
+								this.$alert(result.msg, '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  window.location.reload()
+          							}
+        						});
+							}else{
+								this.$alert(result.msg, '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  
+          							}
+        						});
+							}
+						})
+					}else{
+
 					}
 				})
+			},
+
+			getAllData(){
+				this.listLoading = true
+				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
+					this.listLoading = false
+					var result = res.data
+					console.log(result)
+					if(result.ok){
+						this.allData = this.handleData(result.data)
+					}else {
+						if(count>this.reGetCount){
+							alert('获取数据失败'+result.msg)
+						}else {
+							this.getAllData()
+						}
+					}
+				})
+			},
+			handleData(datas){
+				datas = Object.prototype.toString.call(datas) == '[object Array]'? datas : [datas]
+
+				const _data = []
+				for(let i=0; i< datas.length; i++){
+					const row_data = datas[i]
+					const _row_data = {
+						attractionId: row_data.attractionId,
+						attractionName: row_data.attractionName,
+						attractionPicture: row_data.attractionPicture?row_data.attractionPicture.split(',') : [],
+	
+					}
+					_data.push(_row_data)
+				}
+
+				return _data
+			},
+			arrToStr(arr,fenge=','){
+				return arr.join(fenge)
 			}
+			
+		},
+		mounted(){
+			this.getAllData()
 		}
 	}
 </script>
@@ -132,10 +259,12 @@
 			display inline-block
 			font-size 16px
 			font-weight 700
-		.add-user
+		.add-attraction
 			padding 8px 30px
 			margin-left 30px	
 
-
+	img 
+		width 100px
+		height 100px
 
 </style>

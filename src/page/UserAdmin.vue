@@ -40,21 +40,37 @@
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
 		ref="addForm">
-			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="姓名" prop="name">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+			<el-form :model="addFormData" label-width="80px" :rules="addFormRules" ref="addForm">
+				<el-form-item label="账号" prop="userAccount">
+					<el-input v-model="addFormData.userAccount" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="电话" prop="phone">
-					<el-input v-model="addForm.phone" auto-complete="off"></el-input>
+				<el-form-item label="密码" prop="userPassword">
+					<el-input v-model="addFormData.userPassword" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="公司" prop="company">
-					<el-input v-model="addForm.company" auto-complete="off"></el-input>
+				<el-form-item label="姓名" prop="useName">
+					<el-input v-model="addFormData.useName" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="职位" prop="position">
-					<el-input v-model="addForm.position" auto-complete="off"></el-input>
+				<el-form-item label="公司" prop="companyId">
+					<el-select v-model="addFormData.companyId" placeholder="请选择所在公司" @change = "getDepartmentByComId(addFormData.companyId)">
+					    <el-option
+					      v-for="item in companyData"
+					      :key="item.companyId"
+					      :label="item.companyName"
+					      :value="item.companyId"
+					      >
+					    </el-option>
+					 </el-select>
 				</el-form-item>
-				<el-form-item label="账号" prop="account">
-					<el-input v-model="addForm.account" auto-complete="off"></el-input>
+				<el-form-item label="部门" prop="companyId">
+					<!-- <el-select v-model="addFormData.departmentId" placeholder="请选择所在部门"> -->
+					   <!--  <el-option
+					      v-for="item in deparData"
+					      :key="item.companyId"
+					      :label="item.companyName"
+					      :value="item.companyId">
+					    </el-option> -->
+					 <!-- </el-select> -->
+					 <el-input v-model="addFormData.departmentId"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -98,47 +114,45 @@
 		data(){
 			return{
 				//
-				users:[
-					{
-						id: 1,
-						name: 'dudu',
-						phone: '12345678901',
-						company: 'dudududu',
-						position: 'laoda',
-						account: '4321'
-					}
-				],
+				registerUrl:'/api/user/register', 
+				users:[],
 				listLoading: false,
+
+				getCompanyUrl:'/api/company/getCompany',
+				companyData: [],
+
+				getDepartUrl:'/api/company/getCompany',
+				deparData: [],
 
 				addFormVisible: false,//新增界面是否显示
 				addLoading: false,
+				addFormData:{
+					userAccount:'',
+					userPassword:'',
+					useName:'',
+					companyId:'',
+					departmentId:1,
+				},
 				addFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
+					userAccount: [
+						{ required: true, message: '请输入账号'}
 					],
-					phone: [
-						{ required: true, message: '请输入电话号码', trigger: 'blur' }
+					userPassword: [
+						{ required: true, message: '请输入密码'}
 					],
-					company: [
-						{ required: true, message: '请输入公司名称', trigger: 'blur' }
+					useName: [
+						{ required: true, message: '请输入姓名'}
 					],
-					position: [
-						{ required: true, message: '请输入职位', trigger: 'blur' }
+					companyId: [
+						{ required: true, message: '请选择公司'}
 					],
-					account: [
-						{ required: true, message: '请输入账号', trigger: 'blur' }
+					departmentId: [
+						{ required: true, message: '请选择部门'}
 					]
 				},
-				//新增界面数据
-				addForm: {
-					name: '',
-					phone: '',
-					company: '',
-					position: '',
-					account: ''
-				},
 
-				editFormVisible: false,//编辑界面是否显示
+				//编辑界面是否显示
+				editFormVisible: false,
 				editLoading: false,
 				editFormRules: {
 					name: [
@@ -168,13 +182,37 @@
 			}
 		},
 		methods:{
+			getDepartmentByComId(id){
+				console.log(id)
+			},
+			getCompanyData(){
+
+				this.$axios.get(this.getCompanyUrl).then((res)=>{
+					var result = res.data
+					console.log(result)
+					if(result.ok){
+						this.companyData = result.data
+					}else{
+						alert('获取公司数据失败')
+					}
+				})
+			},
 			submitForm(formName){
 				this.$refs[formName].validate((valid)=>{
 					if(valid){
-						alert('submit')
+						this.$axios.post(this.registerUrl,this.addFormData).then((res)=>{
+							var result = res.data
+							if(result.ok){
+								this.$alert('添加成功', '提示', {
+          							confirmButtonText: '确定',
+          							callback: () => {
+          							  window.location.reload()
+          							}
+        						});
+							}
+						})
 					}else{
-						console.log('error submit!')
-						return false
+
 					}
 				})
 			},
@@ -184,6 +222,9 @@
 				console.log(index)
 				console.log(row)
 			}
+		},
+		mounted(){
+			this.getCompanyData()
 		}
 	}
 </script>
