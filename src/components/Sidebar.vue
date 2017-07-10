@@ -39,8 +39,7 @@
 							{name:'游览车',path:'/bus'},
 							{name:'游轮',path:'/cruises'},
 							{name:'导游',path:'/tourist'},
-							{name:'助理',path:'/assistant'},
-							{name:'资费活动',path:'/activity'},
+							{name:'自费活动',path:'/activity'},
 						]
 					},
 					{name: '权限管理',path: '/rightadmin'},
@@ -68,8 +67,6 @@
 		
 		color #fff
 		width 100%
-		background-color #0278F3
-		min-height 400px
 		height 100%
 		// .el-menu-item
 		//  .el-submenu__title

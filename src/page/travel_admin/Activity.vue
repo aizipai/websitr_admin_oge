@@ -10,31 +10,39 @@
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="optId" label="ID">
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
+			<el-table-column align='center' prop="optId" label="ID">
 			</el-table-column>
-			<el-table-column prop="optAreaId" label="所在地区">
+			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+				</template>
 			</el-table-column>
-			<el-table-column prop="optName" label="活动名称">
+			<el-table-column align='center' prop="optAreaId" label="所在地区">
 			</el-table-column>
-			<el-table-column prop="optStartTime" label="活动开始时间">
+			<el-table-column align='center' prop="optName" label="活动名称">
 			</el-table-column>
-			<el-table-column prop="optEndTime" label="活动结束时间">
+			<el-table-column align='center' prop="optStartTime" label="活动开始时间">
 			</el-table-column>
-			<el-table-column prop="optPrice" label="价格">
+			<el-table-column align='center' prop="optEndTime" label="活动结束时间">
 			</el-table-column>
-			<el-table-column prop="optPicture" label="酒店图片">
+			<el-table-column align='center' prop="optPrice" label="价格">
+			</el-table-column>
+			<el-table-column align='center' prop="optPicture" label="酒店图片" width='200'>
 				<template scope='scope'>
-					<template v-for='src in scope.row.optPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}">
+					<template 
+					v-for='src in scope.row.optPicture'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
+						@click='showBigImg(src)'>
 					</template>
+					
 				</template>	
 			</el-table-column>
-			<el-table-column prop="optRemark" label="备注">
+			<el-table-column align='center' prop="optRemark" label="备注" show-overflow-tooltip width='200'>
 			</el-table-column>
-			<el-table-column prop="optAttention" label="注意事项">
+			<el-table-column align='center' prop="optAttention" label="注意事项" show-overflow-tooltip width='200'>
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -42,15 +50,6 @@
 			</el-table-column>
 		</el-table>
 		
-		<!--新增界面-->
-		<el-dialog title="新增" 
-		:visible.sync="addFormVisible"
-		ref="addFormDialog">
-			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				
-			</el-form>
-			
-		</el-dialog>
 
 		<!--新增界面-->
 		<el-dialog title="新增" 
@@ -188,7 +187,9 @@
 			</div>
 		</el-dialog>
 
-
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
 	
 	</div>
 </template>
@@ -200,6 +201,9 @@
 		},
 		data(){
 			return{
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/optionalActivities/findAllOptionalActivities',
 				getAllDataParams: {
 					page: 1,
@@ -270,6 +274,10 @@
 			}
 		},
 		methods:{
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
+			},
 			handleUploadedImgs(uploadedImgs){
 				this.imgsArr = uploadedImgs
 			},

@@ -10,27 +10,32 @@
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="resId" label="ID">
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
+			<el-table-column align='center' prop="resId" label="ID" >
 			</el-table-column>
-			<el-table-column prop="resAreaId" label="所在地区">
+			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+				</template>
 			</el-table-column>
-			<el-table-column prop="resName" label="餐厅名称">
+			<el-table-column align='center' prop="resAreaId" label="所在地区">
 			</el-table-column>
-			<el-table-column prop="carPicture" label="餐厅图片">
+			<el-table-column align='center' prop="resName" label="餐厅名称">
+			</el-table-column>
+			<el-table-column align='center' prop="carPicture" label="餐厅图片">
 				<template scope='scope'>
 					<template v-for='src in scope.row.resPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}">
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
 					</template>
 				</template>	
 			</el-table-column>
-			<el-table-column prop="resSeatNum" label="座位数量">
+			<el-table-column align='center' prop="resSeatNum" label="座位数量">
 			</el-table-column>
-			<el-table-column prop="resToiletNum" label="洗手间数量">
+			<el-table-column align='center' prop="resToiletNum" label="洗手间数量">
 			</el-table-column>
-			<el-table-column prop="resRemark" label="备注/注意事项">
+			<el-table-column align='center' prop="resRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -141,6 +146,10 @@
 			</div>
 		</el-dialog>
 
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
+
 	</div>
 </template>
 <script>
@@ -151,6 +160,9 @@
 		},
 		data(){
 			return{
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/restaurant/getFormValue',
 				getAllDataParams: {
 					page: 1,
@@ -210,6 +222,10 @@
 			}	
 		},
 		methods:{
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
+			},
 			handleUploadedImgs(uploadedImgs){
 				this.imgsArr = uploadedImgs
 			},

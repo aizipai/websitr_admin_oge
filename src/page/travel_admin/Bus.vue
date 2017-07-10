@@ -10,31 +10,31 @@
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="carId" label="游览车ID">
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
+			<el-table-column align='center' prop="carId" label="游览车ID">
 			</el-table-column>
-			<!-- <el-table-column prop="tourLevel" label="旅游团级别">
+			<!-- <el-table-column align='center' prop="tourLevel" label="旅游团级别">
 			</el-table-column> -->
-			<el-table-column prop="carName" label="游览车名称">
+			<el-table-column align='center' prop="carName" label="游览车名称">
 			</el-table-column>
-			<el-table-column prop="carNo" label="游览车车牌">
+			<el-table-column align='center' prop="carNo" label="游览车车牌">
 			</el-table-column>
-			<el-table-column prop="carType" label="游览车车款">
+			<el-table-column align='center' prop="carType" label="游览车车款">
 			</el-table-column>
-			<el-table-column prop="carPicture" label="游览车图片">
+			<el-table-column align='center' prop="carPicture" label="游览车图片">
 				<template scope='scope'>
 					<template v-for='src in scope.row.carPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}">
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
 					</template>
 				</template>	
 			</el-table-column>
-			<el-table-column prop="carSeatNum" label="游览车座位数">
+			<el-table-column align='center' prop="carSeatNum" label="游览车座位数">
 			</el-table-column>
-			<el-table-column prop="carLuggageNum" label="游览车行李数">
+			<el-table-column align='center' prop="carLuggageNum" label="游览车行李数">
 			</el-table-column>
-			<el-table-column prop="carRemark" label="备注/注意事项">
+			<el-table-column align='center' prop="carRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -141,6 +141,10 @@
 			</div>
 		</el-dialog>
 
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
+	
 		
 
 	</div>
@@ -153,6 +157,9 @@
 		},
 		data(){
 			return{
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/car/findAllCar',
 				getAllDataParams: {
 					page: 1,
@@ -221,6 +228,10 @@
 			}
 		},
 		methods:{
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
+			},
 			handleUploadedImgs(uploadedImgs){
 				this.imgsArr = uploadedImgs
 			},

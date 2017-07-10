@@ -10,31 +10,35 @@
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="hotelId" label="id" class='hide'>
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="500">
+			<el-table-column align='center' prop="hotelId" label="id" class='hide'>
 			</el-table-column>
-			<el-table-column prop="tourLevel" label="旅游团级别">
+			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+				</template>
 			</el-table-column>
-			<el-table-column prop="hotelAreaId" label="所在地区">
+			<el-table-column align='center' prop="hotelAreaId" label="所在地区">
 			</el-table-column>
-			<el-table-column prop="hotelName" label="酒店名称">
+			<el-table-column align='center' prop="hotelName" label="酒店名称">
 			</el-table-column>
-			<el-table-column prop="hotelHomeNum" label="房间数量">
+			<el-table-column align='center' prop="hotelHomeNum" label="房间数量">
 			</el-table-column>
-			<el-table-column prop="hotelCharteredRoomNum" label="包房数量">
+			<el-table-column align='center' prop="hotelCharteredRoomNum" label="包房数量">
 			</el-table-column>
-			<el-table-column prop="hotelRestaurantName" label="餐厅名称">
+			<el-table-column align='center' prop="hotelRestaurantName" label="餐厅名称">
 			</el-table-column>
-			<el-table-column prop="carPicture" label="酒店图片">
+			<el-table-column align='center' prop="carPicture" label="酒店图片">
 				<template scope='scope'>
 					<template v-for='src in scope.row.hotelPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}">
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
+						@click='showBigImg(src)'>
 					</template>
 				</template>	
 			</el-table-column>
-			<el-table-column prop="hotelRemark" label="备注/注意事项">
+			<el-table-column align='center' prop="hotelRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -155,6 +159,9 @@
 			</div>
 		</el-dialog>
 
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
 
 	</div>
 </template>
@@ -166,6 +173,9 @@
 		},
 		data(){
 			return{
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/hotel/getFormValue',
 				getAllDataParams: {
 					page: 1,
@@ -208,7 +218,6 @@
 				},
 
 				//上传图片部分
-				pictureArr: [],
 				dialogVisible: false,
 
 				//编辑数据
@@ -234,6 +243,10 @@
 			}
 		},
 		methods:{
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
+			},
 			handleUploadedImgs(uploadedImgs){
 				this.imgsArr = uploadedImgs
 			},
@@ -298,7 +311,7 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-						
+						console.log(this.imgsArr)
 				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 
 				this.$refs[form].validate((valid)=>{

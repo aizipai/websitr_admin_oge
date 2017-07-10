@@ -1,28 +1,42 @@
 <template>
-	<el-upload
+	<div>
+		<el-upload
 		  class="upload-demo"
 		  ref="uploadImgs"
 		  :action="upLoadUrl"
 		  :on-success="handleUploadSucc"
+		  :on-preview="showBigImg"
 		  :on-remove="handleRemove"
 		  :file-list="existImgListShow"
 		  :auto-upload="false"
 		  list-type="picture-card">
 		  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
 		  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
-		</el-upload>		
-	</template>
+		</el-upload>	
+		<el-dialog v-model="dialogVisible" size="large" custom-class='img-dialog' :modal='showModal'>
+		  <img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>	
+	</div>
+	
+</template>
 <script>
 	
 	export default {
 		props:['existImgList',],
 		data(){
 			return{
+				showModal: false,
+				dialogImageUrl: '',
+        		dialogVisible: false,
 				upLoadUrl:'/api/admin/upload',
 				imgsList:[],
 			}
 		},
 		methods: {
+			showBigImg(file){
+				this.dialogImageUrl = file.url;
+       			this.dialogVisible = true;
+			},
 			handleUploadSucc(response,file,fileList){
 				this.imgsList.push(response['url'])
 				this.$emit('uploadedImgs',this.imgsListToOut)
@@ -66,5 +80,6 @@
 	
 </script>
 <style lang='stylus' scoped>
-	
+	.img-dialog
+		z-index 99999
 </style>

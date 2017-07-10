@@ -10,21 +10,21 @@
 		</div>
 
 		<!--列表-->
-		<el-table :data='allData' highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="attractionId" label="ID" width="55">
+		<el-table :data='allData' highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="800">
+			<el-table-column align='center' prop="attractionId" label="ID" width='100' >
 			</el-table-column>
-			<el-table-column prop="attractionName" label="景点名称" width="155">
+			<el-table-column align='center' prop="attractionName" label="景点名称" width='150' >
 			</el-table-column>
-			<el-table-column prop="attractionPicture" label="景点图片">
-				<template scope='scope'>
+			<el-table-column align='center' prop="attractionPicture" label="景点图片">
+				<template scope='scope'> 
 					<template v-for='src in scope.row.attractionPicture'>
-						<img :src='src'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
 					</template>
 					
 				</template>	
 			</el-table-column>
 			
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150" fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -71,6 +71,11 @@
 				<el-button type="primary" @click.native="submitForm('editForm')" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
+
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
+	
 	</div>
 </template>
 <script>
@@ -82,6 +87,9 @@
 		},
 		data(){
 			return{
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/attraction/findAllAttraction', //获取数据url
 				getAllDataParams: {page: 1,limit: 10},//获取数据参数
 				reGetCount: 5,//获取失败重复获取数据次数
@@ -123,6 +131,10 @@
 			}
 		},
 		methods:{
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
+			},
 			//处理上传的图片
 			handleUploadedImgs(uploadedImgs){
 				this.imgsArr = uploadedImgs

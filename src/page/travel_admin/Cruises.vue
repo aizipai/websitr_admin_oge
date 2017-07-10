@@ -10,37 +10,41 @@
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="cruisesId" label="ID">
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
+			<el-table-column align='center' prop="cruisesId" label="ID">
 			</el-table-column>
-			<el-table-column prop="cruisesName" label="游轮名称">
+			<el-table-column align='center' prop="cruisesName" label="游轮名称">
 			</el-table-column>
-			<el-table-column prop="cruisesIchnography" label="游轮设施">
+			<el-table-column align='center' prop="cruisesIchnography" label="游轮设施">
 			</el-table-column>
-			<el-table-column prop="cruisesHomeNum" label="游轮总房间数">
+			<el-table-column align='center' prop="cruisesHomeNum" label="游轮总房间数">
 			</el-table-column>
-			<el-table-column prop="cruisesSimpleNum" label="游轮单人间数量">
+			<el-table-column align='center' prop="cruisesSimpleNum" label="游轮单人间数量">
 			</el-table-column>
-			<el-table-column prop="cruisesDoubleNum" label="游轮双人间数量">
+			<el-table-column align='center' prop="cruisesDoubleNum" label="游轮双人间数量">
 			</el-table-column>
-			<el-table-column prop="cruisesFacilities" label="游轮平面图">
-				<template scope="scope">
-					<img :src="scope.row.cruisesFacilities" :style="{width:imgWidth,height:imgHeight}">
-				</template>
+			<el-table-column align='center' prop="cruisesFacilities" label="游轮平面图">
+				<template scope='scope'>
+					<template v-for='src in scope.row.cruisesFacilities'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
+					</template>
+				</template>	
 			</el-table-column>
-			<el-table-column prop="cruisesPicture" label="游轮图片">
-				<template scope="scope">
-					<img :src="scope.row.cruisesPicture" :style="{width:imgWidth,height:imgHeight}">
-				</template>
+			<el-table-column align='center' prop="cruisesPicture" label="游轮图片">
+				<template scope='scope'>
+					<template v-for='src in scope.row.cruisesPicture'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
+					</template>
+				</template>	
 			</el-table-column>
-			<el-table-column prop="cruisesLong" label="游轮长">
+			<el-table-column align='center' prop="cruisesLong" label="游轮长(米)">
 			</el-table-column>
-			<el-table-column prop="cruisesWidth" label="游轮宽">
+			<el-table-column align='center' prop="cruisesWidth" label="游轮宽(米)">
 			</el-table-column>
-			<el-table-column prop="cruisesHeight" label="游轮高">
+			<el-table-column align='center' prop="cruisesHeight" label="游轮高(米)">
 			</el-table-column>
 		
-			<el-table-column label="操作" width="150">
+			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -53,7 +57,7 @@
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
-			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
+			<!-- <el-form :model="addFormSendData" label-width="150px" ref="addForm" >
 				<el-form-item label="旅游团级别">
 					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
@@ -63,7 +67,7 @@
  					    :value="item.value">
  					  </el-option>
  	 				</el-select>
-				</el-form-item>
+				</el-form-item> -->
 				
 				<el-form-item label="游轮名称">
 					<el-input v-model="addFormSendData.cruisesName" placeholder="请输入游轮名称"></el-input>
@@ -81,28 +85,14 @@
 					<el-input-number v-model="addFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮平面图">
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePicturePlainSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog v-model="dialogVisible" size="tiny">
-					  <img width="100%" :src="dialogWorkImageUrl" alt="">
-					</el-dialog>
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮图片">
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePictureSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog v-model="dialogVisible" size="tiny">
-					  <img width="100%" :src="dialogWorkImageUrl" alt="">
-					</el-dialog>
+					<upload-imgs 
+					:existImgList='existImgList2'
+					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮长">
 					<el-input-number v-model="addFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长"></el-input-number>(单位:米)
@@ -128,8 +118,8 @@
 		<el-dialog title="修改" 
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
-			<el-form :model="editFormSendData" label-width="100px" ref="editForm">
-				<el-form-item label="旅游团级别">
+			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
+				<!-- <el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
  					    v-for="item in tourLevelData"
@@ -138,7 +128,7 @@
  					    :value="item.value">
  					  </el-option>
  	 				</el-select>
-				</el-form-item>
+				</el-form-item> -->
 				
 				<el-form-item label="游轮名称">
 					<el-input v-model="editFormSendData.cruisesName" placeholder="请输入游轮名称"></el-input>
@@ -156,33 +146,14 @@
 					<el-input-number v-model="editFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮平面图">
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePicturePlainSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<!-- <el-dialog v-model="dialogVisible" size="tiny">
-					  <img width="100%" :src="dialogWorkImageUrl" alt="" >
-					</el-dialog> -->
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮图片">
-
-
-				 	<template ref='cruisesFacilities'>
-				 		<img :src="editFormSendData.cruisesFacilities" alt=""  :style="{width:imgWidth,height:imgHeight}">
-				 	</template>
-					<el-upload
-					  action="/api/admin/upload"
-					  list-type="picture-card"
-					  :on-success="handlePictureSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<!-- <el-dialog v-model="dialogVisible=true" size="tiny">
-					  <img width="100%" :src="editFormSendData.cruisesFacilities" alt="">
-					</el-dialog> -->
+					<upload-imgs 
+					:existImgList='existImgList2'
+					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮长">
 					<el-input-number v-model="editFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长"></el-input-number>(单位:米)
@@ -200,24 +171,46 @@
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="submitForm('editForm')" :loading="addLoading">提交</el-button>
+				<el-button type="primary" @click.native="submitForm('editForm')" :loading="editLoading">提交</el-button>
 			</div>
+		</el-dialog> 
+
+		<el-dialog v-model="imgDialogVisible" size="tiny">
+			<img width="100%" :src="dialogImageUrl" alt="">
 		</el-dialog>
 
 	</div>
 </template>
 <script>
+	import UploadImgs from '../../components/UploadImgs.vue'
 	export default{
+		components:{
+			UploadImgs
+		},
 		data(){
+			
 			return{
-				delSigleData:'/api/car/del/{carId}',
+				dialogImageUrl:'',
+				imgDialogVisible: false,
+
 				getAllDataUrl: '/api/cruises/findAllCruises',
 				getAllDataParams: {
 					page: 1,
 					limit: 10
 				},
+				imgWidth:'100px',
+				imgHeight:'100px',
+				reGetCount: 5,//获取失败重复获取数据次数
+				upLoadUrl:'/api/admin/upload',
+				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				existImgList2:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				imgsArr:[],//上传的所有图片
+				imgsArr2:[],//上传的所有图片
+
+				allData:[],
+
+
 				listLoading:false,
-				allData: [],
 				tourLevelData:[
 					{value: 1,label: '高端'},
 					{value: 0,label: '普通'}
@@ -226,93 +219,113 @@
 					
 				],
 				addLoading:false,
-				imgWidth:'100px',
-				imgHeight:'100px',
 
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormOriginData:{},
 				addFormUrl: '/api/cruises/addFormValue',
 				addFormSendData:{
-					cruisesName:"",
-					cruisesDoubleNum:"",
-					cruisesFacilities:"",
-					cruisesHeight:"",
-					cruisesHomeNum:'',
-					cruisesIchnography:'',
-					cruisesLong:'',
+					cruisesId:'',
+					cruisesName:'',
 					cruisesPicture:'',
+					cruisesHomeNum:'',
+					cruisesDoubleNum:'',
 					cruisesSimpleNum:'',
+					cruisesFacilities:'',
+					cruisesLong:'',
+					cruisesHeight:'',
 					cruisesWidth:'',
-					tourLevel:'',
+					cruisesIchnography:'',
 				},
+
 				//上传图片部分
-				picturePlainArr: [],
 				pictureArr: [],
 				dialogVisible: false,
-				dialogWorkImageUrl: '',
 
-				//编辑部分所用数据
-				editFormVisible: false,
-				editFormUrl: '/api/cruises/addFormValue',
-				editForm:{},
-				editFormOriginData:{},
-				editFormSendData:{
-					cruisesName:"",
-					cruisesDoubleNum:"",
-					cruisesFacilities:"",
-					cruisesHeight:"",
-					cruisesHomeNum:'',
-					cruisesIchnography:'',
-					cruisesLong:'',
+				//编辑数据
+				editFormVisible:false,
+				editFormSendData: {
+					cruisesId:'',
+					cruisesName:'',
 					cruisesPicture:'',
+					cruisesHomeNum:'',
+					cruisesDoubleNum:'',
 					cruisesSimpleNum:'',
+					cruisesFacilities:'',
+					cruisesLong:'',
+					cruisesHeight:'',
 					cruisesWidth:'',
-					tourLevel:'0',
+					cruisesIchnography:'',
 				},
+				editFormRules: {},
+				editLoading:false,
+				editFormUrl:'/api/cruises/addFormValue',
+
+				//删除
+				delUrl:'/api/cruises/del/'
 
 			}
 		},
 		methods:{
-		
-			handleRemove(file,files){
-				
+			showBigImg(src){
+				this.dialogImageUrl = src,
+				this.imgDialogVisible = true
 			},
-			handlePictureSuccess(file,name){
-				console.log(this.$refs.cruisesFacilities)
-				if(this.$refs.cruisesFacilities){this.$refs.cruisesFacilitie.hide()}
-				this.pictureArr.push(file.url)
-				this.addFormSendData.cruisesPicture = this.pictureArr.join(',')
-			},
-			handlePicturePlainSuccess(file,name){
-				this.pictureArr.push(file.url)
-				this.addFormSendData.cruisesFacilities = this.pictureArr.join(',')
-			},
-			handleDel(){
-				
-				// this.$axios.get('')
-			},
-			handleEdit(index, row){
-				this.editFormVisible = true
-				console.log(row)
-				this.editFormSendData = Object.assign({},row)
 
-				if(!this.editFormSendData.tourLevel){
-					this.editFormSendData=Object.assign(this.editFormSendData,{tourLevel:0})
-				}
+			handleUploadedImgs(uploadedImgs){
+				this.imgsArr = uploadedImgs
+			},
+			handleUploadedImgs2(uploadedImgs){
+				this.imgsArr2 = uploadedImgs
+			},
+			handleDel(index, row){
+				var id = row.cruisesId
 				
-				console.log(row)
+
+				this.$confirm('确定删除？', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+        			this.$axios.get(this.delUrl+id).then((res)=>{
+					var result = res.data
+					if(result.ok){
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  window.location.reload()
+          					}
+        				});
+					}else{
+						this.$alert(result.msg, '提示', {
+          					confirmButtonText: '确定',
+          					callback: () => {
+          					  
+          					}
+        				});
+					}
+					})
+
+        		}).catch(() => {
+        		  this.$message({
+        		    type: 'info',
+        		    message: '已取消删除'
+        		  });          
+        		});	
+
 			},
 			submitForm(form){
-				var _self = this
+
 				var _url = form+'Url',
 						_params = form+'SendData'
+						
+				this[_params]['cruisesFacilities'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)				
+				this[_params]['cruisesPicture'] = this.arrToStr(this.imgsArr2) || this.arrToStr(this.existImgList2)					
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
-						_self.$axios.post(this[_url],this[_params]).then((res)=>{
-							var result = res.data
+						this.$axios.post(this[_url],this[_params]).then((res)=>{
+							const result = res.data
 							if(result.ok){
 								this.$alert(result.msg, '提示', {
           							confirmButtonText: '确定',
@@ -334,12 +347,23 @@
 					}
 				})
 			},
+			handleEdit(index, row){
+				
+				this.editFormSendData = Object.assign({},row)
+
+				this.existImgList = row.cruisesFacilities
+				this.existImgList2 = row.cruisesPicture
+
+				this.editFormVisible = true
+				
+			},
+			
 			getAllData(){
 				this.listLoading = true
 				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
 					this.listLoading = false
 					var result = res.data
-					this.allData = result.data
+					this.allData = this.handleData(result.data)
 				})
 			},
 			handleData(datas){
@@ -349,22 +373,28 @@
 				for(let i=0; i< datas.length; i++){
 					const row_data = datas[i]
 					const _row_data = {
-						carId: row_data.carId,
-						carLuggageNum: row_data.carLuggageNum,
-						carName: row_data.carName,
-						carNo: row_data.carNo,
-						carPicture: row_data.carPicture,
-						carRemark: row_data.carRemark,
-						carSeatNum: row_data.carSeatNum,
-						carType: row_data.carType,
-						status: row_data.status,
-						tourLevel:parseInt(row_data.status)
+						cruisesId:row_data.cruisesId,
+						cruisesName:row_data.cruisesName,
+						cruisesHomeNum:row_data.cruisesHomeNum,
+						cruisesDoubleNum:row_data.cruisesDoubleNum,
+						cruisesSimpleNum:row_data.cruisesSimpleNum,
+						cruisesFacilities:row_data.cruisesFacilities,
+						cruisesLong:row_data.cruisesLong,
+						cruisesHeight:row_data.cruisesHeight,
+						cruisesWidth:row_data.cruisesWidth,
+						cruisesIchnography:row_data.cruisesIchnography,
+						cruisesPicture: row_data.cruisesPicture?row_data.cruisesPicture.split(',') : [],
+						cruisesFacilities: row_data.cruisesFacilities?row_data.cruisesFacilities.split(',') : [],
+
 					}
 					_data.push(_row_data)
 				}
 
 				return _data
-			}
+			},
+			arrToStr(arr,fenge=','){
+				return arr.join(fenge)
+			},
 		},
 		mounted(){
 			this.getAllData()

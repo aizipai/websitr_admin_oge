@@ -32,7 +32,7 @@
 		data(){
 			return{
 				title: '运营中心',
-				userName: '嘟嘟',
+				userName: '哈先生',
 				userId: '123',
 				dialogVisible: false
 			}
