@@ -160,7 +160,7 @@
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: '/api/car/findAllCar',
+				getAllDataUrl: API_URL['GET_CAR_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -168,8 +168,8 @@
 				imgWidth:'100px',
 				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
-				upLoadUrl:'/api/admin/upload',
-				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList:[],//存在的图片
 				imgsArr:[],//上传的所有图片
 
 				allData:[],
@@ -188,7 +188,7 @@
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormUrl: '/api/car/addFormValue',
+				addFormUrl: API_URL['ADD_CAR'],
 				addFormSendData:{
 					carId:'',
 					carName:'',
@@ -220,10 +220,10 @@
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/car/addFormValue',
+				editFormUrl:API_URL['ADD_CAR'],
 
 				//删除
-				delUrl:'/api/car/del/'
+				delUrl:API_URL['DEL_CAR'],
 
 			}
 		},

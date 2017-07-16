@@ -57,8 +57,8 @@
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
-			<!-- <el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				<el-form-item label="旅游团级别">
+			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
+				<!-- <el-form-item label="旅游团级别">
 					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
  					    v-for="item in tourLevelData"
@@ -193,7 +193,7 @@
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: '/api/cruises/findAllCruises',
+				getAllDataUrl: API_URL['GET_CRU_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -201,9 +201,9 @@
 				imgWidth:'100px',
 				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
-				upLoadUrl:'/api/admin/upload',
-				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
-				existImgList2:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList:[],//存在的图片
+				existImgList2:[],//存在的图片
 				imgsArr:[],//上传的所有图片
 				imgsArr2:[],//上传的所有图片
 
@@ -223,19 +223,19 @@
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormUrl: '/api/cruises/addFormValue',
+				addFormUrl: API_URL['ADD_CRU'],
 				addFormSendData:{
-					cruisesId:'',
-					cruisesName:'',
-					cruisesPicture:'',
-					cruisesHomeNum:'',
-					cruisesDoubleNum:'',
-					cruisesSimpleNum:'',
-					cruisesFacilities:'',
-					cruisesLong:'',
-					cruisesHeight:'',
-					cruisesWidth:'',
-					cruisesIchnography:'',
+					cruisesId:null,
+					cruisesName:null,
+					cruisesPicture:null,
+					cruisesHomeNum:null,
+					cruisesDoubleNum:null,
+					cruisesSimpleNum:null,
+					cruisesFacilities:null,
+					cruisesLong:null,
+					cruisesHeight:null,
+					cruisesWidth:null,
+					cruisesIchnography:null,
 				},
 
 				//上传图片部分
@@ -245,24 +245,24 @@
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					cruisesId:'',
-					cruisesName:'',
-					cruisesPicture:'',
-					cruisesHomeNum:'',
-					cruisesDoubleNum:'',
-					cruisesSimpleNum:'',
-					cruisesFacilities:'',
-					cruisesLong:'',
-					cruisesHeight:'',
-					cruisesWidth:'',
-					cruisesIchnography:'',
+					cruisesId:null,
+					cruisesName:null,
+					cruisesPicture:null,
+					cruisesHomeNum:null,
+					cruisesDoubleNum:null,
+					cruisesSimpleNum:null,
+					cruisesFacilities:null,
+					cruisesLong:null,
+					cruisesHeight:null,
+					cruisesWidth:null,
+					cruisesIchnography:null,
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/cruises/addFormValue',
+				editFormUrl:API_URL['ADD_CRU'],
 
 				//删除
-				delUrl:'/api/cruises/del/'
+				delUrl:API_URL['DEL_CRU']
 
 			}
 		},

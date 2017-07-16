@@ -42,7 +42,6 @@
 							{name:'自费活动',path:'/activity'},
 						]
 					},
-					{name: '权限管理',path: '/rightadmin'},
 					{name: '公共栏目',path: '/commonpro'}
 				]
 			}

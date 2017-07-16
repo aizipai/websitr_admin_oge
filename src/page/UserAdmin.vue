@@ -12,23 +12,24 @@
 
 
 		<!--列表-->
-		<el-table :data="users" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="id" label="ID" width="55">
+		<el-table :data="users" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
+			<el-table-column prop="userUserId" label="ID">
 			</el-table-column>
-			<el-table-column prop="name" label="姓名" width="120" >
+			<el-table-column prop="userAccount" label="账号">
 			</el-table-column>
-			<el-table-column prop="phone" label="电话" width="150" >
+			<el-table-column prop="userName" label="姓名">
 			</el-table-column>
-			<el-table-column prop="company" label="公司名称" width="200" >
+			<el-table-column prop="companyId" label="公司名称">
 			</el-table-column>
-			<el-table-column prop="position" label="职位" width="120" >
+			<el-table-column prop="departmentId" label="职位">
 			</el-table-column>
-			<el-table-column prop="account" label="账号" min-width="180" >
+			<el-table-column prop="userEmail" label="邮箱">
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column label="操作" fixed="right">
 				<template scope="scope">
-					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+					<!-- <el-button size="small" @click="handleEditMM(scope.$index, scope.row)">修改密码</el-button> -->
+					<el-button size="small" @click="handleEditXX(scope.$index, scope.row)">编辑</el-button>
+					<!-- <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -50,28 +51,31 @@
 				<el-form-item label="姓名" prop="useName">
 					<el-input v-model="addFormData.useName" auto-complete="off"></el-input>
 				</el-form-item>
+				<el-form-item label="邮箱" prop="userEmail">
+					<el-input v-model="addFormData.userEmail" auto-complete="off"></el-input>
+				</el-form-item>
 				<el-form-item label="公司" prop="companyId">
 					<el-select v-model="addFormData.companyId" placeholder="请选择所在公司" @change = "getDepartmentByComId(addFormData.companyId)">
 					    <el-option
 					      v-for="item in companyData"
 					      :key="item.companyId"
 					      :label="item.companyName"
-					      :value="item.companyId"
+					      :value="item.companyId">
+					    </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="部门" prop="departmentId">
+					<el-select v-model="addFormData.departmentId" placeholder="请选择所在部门" >
+					    <el-option
+					      v-for="item in  departmentData"
+					      :key="item.departmentId"
+					      :label="item.departmentName"
+					      :value="item.departmentId"
 					      >
 					    </el-option>
 					 </el-select>
 				</el-form-item>
-				<el-form-item label="部门" prop="companyId">
-					<!-- <el-select v-model="addFormData.departmentId" placeholder="请选择所在部门"> -->
-					   <!--  <el-option
-					      v-for="item in deparData"
-					      :key="item.companyId"
-					      :label="item.companyName"
-					      :value="item.companyId">
-					    </el-option> -->
-					 <!-- </el-select> -->
-					 <el-input v-model="addFormData.departmentId"></el-input>
-				</el-form-item>
+				
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
@@ -79,33 +83,74 @@
 			</div>
 		</el-dialog>
 
-		<!-- 删除界面 -->
+		<!--修改界面-->
+		<el-dialog title="修改" 
+		:visible.sync="editXXFormVisible"
+		ref="editXXForm">
+			<el-form :model="editMMFormSendData" label-width="80px"  ref="editXXForm">
+				<el-form-item label="账号" prop="userAccount">
+					<el-input v-model="editMMFormSendData.userAccount" auto-complete="off"></el-input>
+				</el-form-item>
+				<!-- <el-form-item label="密码" prop="userPassword">
+					<el-input v-model="editMMFormSendData.userPassword" auto-complete="off"></el-input>
+				</el-form-item> -->
+				<el-form-item label="姓名" prop="useName">
+					<el-input v-model="editMMFormSendData.useName" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="邮箱" prop="userEmail">
+					<el-input v-model="editMMFormSendData.userEmail" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="公司" prop="companyId">
+					<el-select v-model="editMMFormSendData.companyId" placeholder="请选择所在公司" @change = "getDepartmentByComId(editMMFormSendData.companyId)">
+					    <el-option
+					      v-for="item in companyData"
+					      :key="item.companyId"
+					      :label="item.companyName"
+					      :value="item.companyId">
+					    </el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="部门" prop="departmentId">
+					<el-select v-model="editMMFormSendData.departmentId" placeholder="请选择所在部门" >
+					    <el-option
+					      v-for="item in  departmentData"
+					      :key="item.departmentId"
+					      :label="item.departmentName"
+					      :value="item.departmentId"
+					      >
+					    </el-option>
+					 </el-select>
+				</el-form-item>
+				
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="editXXFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="submitForm('editXXForm')" >提交</el-button>
+			</div>
+		</el-dialog>
 
-		<el-dialog title="新增" 
-		:visible.sync="editFormVisible"
-		ref="editForm">
-			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="姓名" prop="name">
-					<el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+		<!--修改界面-->
+		<!-- <el-dialog title="修改" 
+		:visible.sync="editMMFormVisible"
+		ref="editFormDialog">
+			<el-form :model="editMMFormSendData" label-width="150px" ref="editMMForm" >
+				<el-form-item label='请输入密码'>
+					<el-input v-model="editMMFormData.user" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="电话" prop="phone">
-					<el-input v-model="editForm.phone" auto-complete="off"></el-input>
+				<el-form-item label='请输入新密码'>
+					<el-input v-model="editMMFormData.userAccount" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="公司" prop="company">
-					<el-input v-model="editForm.company" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="职位" prop="position">
-					<el-input v-model="editForm.position" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="账号" prop="account">
-					<el-input v-model="editForm.account" auto-complete="off"></el-input>
+				<el-form-item label='请再次输入新密码'>
+					<el-input v-model="editMMFormData.userAccount" auto-complete="off"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="submitForm('editForm')" :loading="addLoading">提交</el-button>
+				<el-button type="primary" @click.native="submitMMForm()" :loading="editLoading">提交</el-button>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
+		
 
 	</div>
 </template>
@@ -114,24 +159,26 @@
 		data(){
 			return{
 				//
-				registerUrl:'/api/user/register', 
+				registerUrl:API_URL['DO_REGESTER'],
 				users:[],
 				listLoading: false,
 
-				getCompanyUrl:'/api/company/getCompany',
+				getCompanyUrl:API_URL['GET_COMPANY'],
 				companyData: [],
 
-				getDepartUrl:'/api/company/getCompany',
-				deparData: [],
+				getDepartUrl:API_URL['GET_DEPTMENT'],
+				departmentData: [],
 
 				addFormVisible: false,//新增界面是否显示
 				addLoading: false,
 				addFormData:{
-					userAccount:'',
-					userPassword:'',
-					useName:'',
-					companyId:'',
-					departmentId:1,
+					userUserId:null,
+					userAccount:null,
+					userPassword:null,
+					userName:null,
+					companyId:null,
+					userEmail:null,
+					departmentId:null,
 				},
 				addFormRules: {
 					userAccount: [
@@ -152,38 +199,43 @@
 				},
 
 				//编辑界面是否显示
-				editFormVisible: false,
+
+				editMMFormVisible: false,
+				editXXFormVisible: false,
 				editLoading: false,
-				editFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					],
-					phone: [
-						{ required: true, message: '请输入电话号码', trigger: 'blur' }
-					],
-					company: [
-						{ required: true, message: '请输入公司名称', trigger: 'blur' }
-					],
-					position: [
-						{ required: true, message: '请输入职位', trigger: 'blur' }
-					],
-					account: [
-						{ required: true, message: '请输入账号', trigger: 'blur' }
-					]
+				
+				editMMFormSendData:{
+					userUserId:null,
+					userAccount:null,
+					userPassword:null,
+					userName:null,
+					companyId:null,
+					userEmail:null,
+					departmentId:null,
 				},
-				//编辑界面数据
-				editForm: {
-					name: '',
-					phone: '',
-					company: '',
-					position: '',
-					account: '',
-				}
+				editXXFormSendData:{
+
+				},
+				
 			}
 		},
 		methods:{
+			handleEditXX(index, row){
+				
+				this.editMMFormSendData = Object.assign({},row)
+				this.editXXFormVisible = true
+				
+			},
 			getDepartmentByComId(id){
-				console.log(id)
+				this.$axios.get(this.getDepartUrl+id).then((res)=>{
+					var result = res.data
+					console.log(result)
+					if(result.ok){
+						this.departmentData = result.data
+					}else{
+						alert('获取部门数据失败')
+					}
+				})
 			},
 			getCompanyData(){
 
@@ -194,6 +246,17 @@
 						this.companyData = result.data
 					}else{
 						alert('获取公司数据失败')
+					}
+				})
+			},
+			getAllData(){
+				this.$axios.get(API_URL['GET_USER_LIST']).then((res)=>{
+					const result = res.data
+					console.log(result)
+					if(result.ok){
+						this.users = this.handleData(result.data)
+					}else {
+						alert('获取用户列表失败')
 					}
 				})
 			},
@@ -209,6 +272,8 @@
           							  window.location.reload()
           							}
         						});
+							}else{
+								alert(result.msg)
 							}
 						})
 					}else{
@@ -216,15 +281,31 @@
 					}
 				})
 			},
-			handleEdit(index, row){
-				this.editFormVisible = true
-				this.editForm = Object.assign({}, row)
-				console.log(index)
-				console.log(row)
-			}
+			
+			handleData(datas){
+				datas = Object.prototype.toString.call(datas) == '[object Array]'? datas : [datas]
+
+				const _data = []
+				for(let i=0; i< datas.length; i++){
+					const row_data = datas[i]
+					const _row_data = {
+						userUserId:row_data.userUserId,
+						userAccount:row_data.userAccount,
+						userPassword:row_data.userPassword,
+						userName:row_data.userName,
+						companyId:row_data.companyId,
+						userEmail:row_data.userEmail,
+						departmentId:row_data.departmentId,
+					}
+					_data.push(_row_data)
+				}
+
+				return _data
+			},
 		},
 		mounted(){
 			this.getCompanyData()
+			this.getAllData()
 		}
 	}
 </script>

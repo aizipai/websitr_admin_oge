@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="b-top">
-			<div class="t-tit">资费活动</div>
+			<div class="t-tit">自费活动</div>
 			<el-button 
 				class="add-active"
   				type="primary" 
@@ -19,6 +19,10 @@
 				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="optAreaId" label="所在地区">
+				<template scope = 'scope'>
+					<span v-if='hotelArea[scope.row.optAreaId-1]'>
+					{{hotelArea[scope.row.optAreaId-1]["areaName"]}}</span>
+				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="optName" label="活动名称">
 			</el-table-column>
@@ -204,7 +208,7 @@
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: '/api/optionalActivities/findAllOptionalActivities',
+				getAllDataUrl: API_URL['GET_ACT_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -212,8 +216,8 @@
 				imgWidth:'100px',
 				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
-				upLoadUrl:'/api/admin/upload',
-				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList:[],//存在的图片
 				imgsArr:[],//上传的所有图片
 
 				allData:[],
@@ -232,7 +236,7 @@
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormUrl: '/api/optionalActivities/addFormValue',
+				addFormUrl: API_URL['ADD_ACT'],
 				addFormSendData:{
 					optAreaId:"",
 					optAttention:"",
@@ -266,13 +270,16 @@
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/optionalActivities/addFormValue',
+				editFormUrl:API_URL['ADD_ACT'],
 
 				//删除
-				delUrl:'/api/optionalActivities/del/'
+				delUrl:API_URL['DEL_ACT'],
+
+				areaText:[]
 
 			}
 		},
+	
 		methods:{
 			showBigImg(src){
 				this.dialogImageUrl = src,
@@ -283,10 +290,9 @@
 			},
 			getHotelArea(){
 
-				this.$axios.get('/api/area/getAll').then((res)=>{
+				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
-						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
@@ -404,10 +410,14 @@
 			arrToStr(arr,fenge=','){
 				return arr.join(fenge)
 			},
+
 		},
+		
 		mounted(){
-			this.getAllData()
 			this.getHotelArea()
+			
+			this.getAllData()
+
 		}
 	}
 </script>

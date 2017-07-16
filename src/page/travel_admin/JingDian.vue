@@ -15,6 +15,11 @@
 			</el-table-column>
 			<el-table-column align='center' prop="attractionName" label="景点名称" width='150' >
 			</el-table-column>
+			<el-table-column  align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+				</template>
+			</el-table-column>
 			<el-table-column align='center' prop="attractionPicture" label="景点图片">
 				<template scope='scope'> 
 					<template v-for='src in scope.row.attractionPicture'>
@@ -36,9 +41,19 @@
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
-			<el-form :model="addFormSendData" label-width="80px" :rules="addFormRules" ref="addForm">
+			<el-form :model="addFormSendData" label-width="100px" :rules="addFormRules" ref="addForm">
 				<el-form-item label="活动名称" prop="attractionName">
 					<el-input v-model="addFormSendData.attractionName"></el-input>
+				</el-form-item>
+				<el-form-item label="旅游团级别">
+					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
+ 					   <el-option
+ 					     v-for="item in tourLevelData"
+ 					     :key="item.value"
+ 					     :label="item.label"
+ 					     :value="item.value">
+ 					   </el-option>
+ 					 </el-select>
 				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
@@ -52,13 +67,23 @@
 			</div>
 		</el-dialog>
 
-		<!--新增界面-->
-		<el-dialog title="新增" 
+		<!--修改界面-->
+		<el-dialog title="修改" 
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
-			<el-form :model="editFormSendData" label-width="80px" :rules="editFormRules" ref="editForm">
+			<el-form :model="editFormSendData" label-width="100px" :rules="editFormRules" ref="editForm">
 				<el-form-item label="活动名称" prop="attractionName">
 					<el-input v-model="editFormSendData.attractionName"></el-input>
+				</el-form-item>
+				<el-form-item label="旅游团级别">
+					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
+ 					   <el-option
+ 					     v-for="item in tourLevelData"
+ 					     :key="item.value"
+ 					     :label="item.label"
+ 					     :value="item.value">
+ 					   </el-option>
+ 					 </el-select>
 				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
@@ -90,15 +115,22 @@
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: '/api/attraction/findAllAttraction', //获取数据url
+				getAllDataUrl: API_URL['GET_ATTR_LIST'], //获取数据url
 				getAllDataParams: {page: 1,limit: 10},//获取数据参数
+				imgWidth:'100px',
+				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
 
-				upLoadUrl:'/api/admin/upload',
-				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList:[],//存在的图片
 				imgsArr:[],//上传的所有图片
 
+
 				allData:[],
+				tourLevelData:[
+					{value: 1,label: '高端'},
+					{value: 0,label: '普通'}
+				],
 
 				//列表
 				listLoading:false,
@@ -107,26 +139,28 @@
 				//添加数据
 				addFormVisible:false,
 				addFormSendData: {
-					attractionName:'',
-					attractionPicture:''
+					attractionName:null,
+					attractionPicture:null,
+					tourLevel:null,
 				},
 				addFormRules: {},
 				addLoading:false,
-				addFormUrl:'/api/attraction/addFormValue',
+				addFormUrl:API_URL['ADD_ATTR'],
 
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					attractionId:'',
-					attractionName:'',
-					attractionPicture:'',
+					attractionId:null,
+					attractionName:null,
+					attractionPicture:null,
+					tourLevel:null,
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/attraction/addFormValue',
+				editFormUrl:API_URL['ADD_ATTR'],
 
 				//删除
-				delUrl:'/api/attraction/del/',
+				delUrl:API_URL['DEL_ATTR'],
 				
 			}
 		},
@@ -224,7 +258,6 @@
 				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
 					this.listLoading = false
 					var result = res.data
-					console.log(result)
 					if(result.ok){
 						this.allData = this.handleData(result.data)
 					}else {
@@ -245,7 +278,9 @@
 					const _row_data = {
 						attractionId: row_data.attractionId,
 						attractionName: row_data.attractionName,
+						tourLevel: row_data.tourLevel,
 						attractionPicture: row_data.attractionPicture?row_data.attractionPicture.split(',') : [],
+
 	
 					}
 					_data.push(_row_data)

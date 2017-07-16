@@ -19,6 +19,11 @@
 				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="resAreaId" label="所在地区">
+				<template scope = 'scope'>
+					<span v-if='hotelArea[scope.row.resAreaId-1]'>
+					{{hotelArea[scope.row.resAreaId-1]["areaName"]}}</span>
+					
+				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="resName" label="餐厅名称">
 			</el-table-column>
@@ -163,7 +168,7 @@
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: '/api/restaurant/getFormValue',
+				getAllDataUrl: API_URL['GET_RES_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -171,8 +176,8 @@
 				imgWidth:'100px',
 				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
-				upLoadUrl:'/api/admin/upload',
-				existImgList:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList:[],//存在的图片
 				imgsArr:[],//上传的所有图片
 
 				allData:[],
@@ -192,14 +197,15 @@
 				addFormRules: {},
 				addFormVisible: false,
 
-				addFormUrl: '/api/restaurant/addFormValue',
+				addFormUrl: API_URL['ADD_RES'],
 				addFormSendData:{
-					resSeatNum:"",
-					resToiletNum:"",
-					resName:"",
-					resAreaId:'',
-					resPicture:'',
-					tourLevel:'',
+					resSeatNum:null,
+					resToiletNum:null,
+					resName:null,
+					resAreaId:null,
+					resPicture:null,
+					resRemark:null,
+					tourLevel:null,
 				},
 				//上传图片部分
 				pictureArr: [],
@@ -208,16 +214,21 @@
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					attractionId:'',
-					attractionName:'',
-					attractionPicture:'',
+					attractionId:null,
+					resSeatNum:null,
+					resToiletNum:null,
+					resName:null,
+					resAreaId:null,
+					resPicture:null,
+					resRemark:null,
+					tourLevel:null,
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/restaurant/addFormValue',
+				editFormUrl:API_URL['ADD_RES'],
 
 				//删除
-				delUrl:'/api/restaurant/del/',
+				delUrl:API_URL['DEL_RES'],
 				
 			}	
 		},
@@ -231,7 +242,7 @@
 			},
 			getHotelArea(){
 
-				this.$axios.get('/api/area/getAll').then((res)=>{
+				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
 						console.log(res.data)
@@ -337,6 +348,7 @@
 						resName:row_data.resName,
 						resAreaId:row_data.resAreaId,
 						tourLevel:row_data.tourLevel,
+						resRemark:row_data.resRemark,
 						resPicture: row_data.resPicture?row_data.resPicture.split(',') : [],
 					}
 					_data.push(_row_data)

@@ -54,15 +54,15 @@ export default new Router({
             { path: '/activity', component: Activity, name: '资费活动' },
         ]
     },
-    {
-        path: '/',
-        component: Home,
-        name: '导航三',
-        iconCls: 'el-icon-message',//图标样式class
-        children: [
-            { path: '/rightadmin', component: RightAdmin, name: '权限管理'},
-        ]
-    },
+    // {
+    //     path: '/',
+    //     component: Home,
+    //     name: '导航三',
+    //     iconCls: 'el-icon-message',//图标样式class
+    //     children: [
+    //         { path: '/rightadmin', component: RightAdmin, name: '权限管理'},
+    //     ]
+    // },
     {
         path: '/',
         component: Home,

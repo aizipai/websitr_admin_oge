@@ -16,12 +16,16 @@ import store from './store'
 import Vuex from 'vuex'
 
 import axios from 'axios'
+import API_URL from './api/index.js'
+
+window.API_URL = API_URL //声明全局变量  
 
 Vue.prototype.$axios = axios
 
 
 Vue.use(ElementUI)
 Vue.use(Vuex)
+
 
 
 Vue.config.productionTip = false

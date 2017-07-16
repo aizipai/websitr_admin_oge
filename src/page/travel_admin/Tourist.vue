@@ -222,7 +222,7 @@
 				imgDialogVisible: false,
 
 				
-				getAllDataUrl: '/api/guide/findAllGuide',
+				getAllDataUrl: API_URL['GET_TOUR_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -230,10 +230,10 @@
 				imgWidth:'100px',
 				imgHeight:'100px',
 				reGetCount: 5,//获取失败重复获取数据次数
-				upLoadUrl:'/api/admin/upload',
-				existImgList1:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
-				existImgList2:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
-				existImgList3:['https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'],//存在的图片
+				upLoadUrl:API_URL['UPLOAD_IMG'],
+				existImgList1:[],//存在的图片
+				existImgList2:[],//存在的图片
+				existImgList3:[],//存在的图片
 				imgsArr1:[],//上传的所有图片
 				imgsArr2:[],//上传的所有图片
 				imgsArr3:[],//上传的所有图片
@@ -254,7 +254,7 @@
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormUrl: '/api/guide/addFormValue',
+				addFormUrl: API_URL['ADD_TOUR'],
 				addFormSendData:{
 					guideId:null,
 					guidePicture:null,
@@ -291,10 +291,10 @@
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:'/api/guide/addFormValue',
+				editFormUrl:API_URL['ADD_TOUR'],
 
 				//删除
-				delUrl:'/api/guide/del/'
+				delUrl:API_URL['DEL_TOUR'],
 
 			
 				
@@ -317,7 +317,7 @@
 			},
 			getHotelArea(){
 
-				this.$axios.get('/api/area/getAll').then((res)=>{
+				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
 						console.log(res.data)
