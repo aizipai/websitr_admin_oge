@@ -36,6 +36,7 @@
 							{name:'景点',path:'/jingdian'},
 							{name:'酒店',path:'/hotel'},
 							{name:'餐厅',path:'/restaurant'},
+							// {name:'菜单',path:'/menu'},
 							{name:'游览车',path:'/bus'},
 							{name:'游轮',path:'/cruises'},
 							{name:'导游',path:'/tourist'},

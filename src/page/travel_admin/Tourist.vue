@@ -15,45 +15,54 @@
 			</el-table-column>
 			<el-table-column  align='center' prop="tourLevel" label="旅游团级别">
 				<template scope = 'scope'>
-					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column  align='center' prop="nameC" label="中文姓名" >
 			</el-table-column>
 			<el-table-column  align='center' prop="nameE" label="英文姓名" >
 			</el-table-column>
-			<el-table-column  align='center' prop="guideAge" label="年龄">
+			<el-table-column  align='center' prop="guideAge" label="年龄(岁)">
 			</el-table-column>
 			<el-table-column  align='center' prop="guideExperiences" label="工作经验">
 			</el-table-column>
 			<el-table-column  align='center' prop="guideGender" label="性别" >
 				<template scope = 'scope'>
-					<span v-text='scope.row.tourLevel == 0? "女" : "男"'></span>
+					<span v-text='scope.row.guideGender == 0? "女" : "男"'></span>
 				</template>
 			</el-table-column>
 			<el-table-column  align='center' prop="guideLicense" label="资格证">
-				<template scope='scope'>
+				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.guideLicense'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
 						@click='showBigImg(src)'>
 					</template>
+				</template>	 -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.guideLicense'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column  align='center' prop="guideSelfPicture" label="导游照片">
-				<template scope='scope'>
+				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.guideSelfPicture'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
 						@click='showBigImg(src)'>
 					</template>
-				</template>
+				</template> -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.guideSelfPicture'></DialogCarousel>
+				</template>	
 			</el-table-column>
-			<el-table-column  align='center' prop="guidePicture" label="照片">
-				<template scope='scope'>
+			<el-table-column  align='center' prop="guidePicture" label="照片集">
+				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.guidePicture'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
 						@click='showBigImg(src)'>
 					</template>
-				</template>
+				</template> -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.guidePicture'></DialogCarousel>
+				</template>	
 			</el-table-column>
 			<el-table-column  align='center' prop="guideSelfDescription" label="自我介绍" show-overflow-tooltip width='300px'>
 			</el-table-column>
@@ -96,7 +105,7 @@
 				<el-form-item label="英文姓名">
 					<el-input v-model="addFormSendData.nameE"></el-input>
 				</el-form-item>
-				<el-form-item label="年龄">
+				<el-form-item label="年龄(岁)">
 					<el-input-number v-model="addFormSendData.guideAge" :min="20" :max="30"></el-input-number>
 				</el-form-item>
 				<el-form-item label="性别">
@@ -105,9 +114,12 @@
 						<el-radio class="radio" :label="0">女</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="经验">
+				<el-form-item label="经验(年)">
 					<el-input-number v-model="addFormSendData.guideExperiences" :min="20" :max="30"></el-input-number>
 				</el-form-item>
+				<el-form-item label="自我介绍">
+  				  <el-input type="textarea" v-model="addFormSendData.guideSelfDescription"></el-input>
+  				</el-form-item>
 				<el-form-item label="导游资格证">
 					<upload-imgs 
 					:existImgList='[]'
@@ -118,14 +130,12 @@
 					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
-				<el-form-item label="照片">
+				<el-form-item label="照片集">
 					<upload-imgs 
 					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs3'></upload-imgs>
 				</el-form-item>
-				<el-form-item label="自我介绍">
-  				  <el-input type="textarea" v-model="addFormSendData.guideSelfDescription"></el-input>
-  				</el-form-item>
+				
 				
 				
 			</el-form>
@@ -166,7 +176,7 @@
 				<el-form-item label="英文姓名">
 					<el-input v-model="editFormSendData.nameE"></el-input>
 				</el-form-item>
-				<el-form-item label="年龄">
+				<el-form-item label="年龄(岁)">
 					<el-input-number v-model="editFormSendData.guideAge" :min="20" :max="30"></el-input-number>
 				</el-form-item>
 				<el-form-item label="性别">
@@ -175,9 +185,12 @@
 						<el-radio class="radio" :label="0">女</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="经验">
+				<el-form-item label="经验(年)">
 					<el-input-number v-model="editFormSendData.guideExperiences" :min="20" :max="30"></el-input-number>
 				</el-form-item>
+				<el-form-item label="自我介绍">
+  				  <el-input type="textarea" v-model="editFormSendData.guideSelfDescription"></el-input>
+  				</el-form-item>
 				<el-form-item label="导游资格证">
 					<upload-imgs 
 					:existImgList='existImgList1'
@@ -188,14 +201,12 @@
 					:existImgList='existImgList2'
 					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
-				<el-form-item label="照片">
+				<el-form-item label="照片集">
 					<upload-imgs 
 					:existImgList='existImgList3'
 					@uploadedImgs='handleUploadedImgs3'></upload-imgs>
 				</el-form-item>
-				<el-form-item label="自我介绍">
-  				  <el-input type="textarea" v-model="editFormSendData.guideSelfDescription"></el-input>
-  				</el-form-item>
+				
 				
 				
 			</el-form>
@@ -212,9 +223,11 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
@@ -243,8 +256,9 @@
 
 				listLoading:false,
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 				hotelArea: [
 					
@@ -307,7 +321,6 @@
 			},
 			handleUploadedImgs1(uploadedImgs){
 				this.imgsArr1 = uploadedImgs
-				console.log(this.imgsArr1)
 			},
 			handleUploadedImgs2(uploadedImgs){
 				this.imgsArr2 = uploadedImgs
@@ -320,7 +333,6 @@
 				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
-						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
@@ -349,7 +361,12 @@
 						this.$alert(result.msg, '提示', {
           					confirmButtonText: '确定',
           					callback: () => {
-          					  
+          					  for(item in this.addFormSendData){
+          					  	item = null
+          					  }
+          					  for(item in this.editFormSendData){
+          					  	item = null
+          					  }
           					}
         				});
 					}
@@ -378,7 +395,6 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-						console.log(this.imgsArr1)
 				this[_params]['guideLicense'] = this.arrToStr(this.imgsArr1) || this.arrToStr(this.existImgList1)		
 				this[_params]['guideSelfPicture'] = this.arrToStr(this.imgsArr2) || this.arrToStr(this.existImgList2)		
 				this[_params]['guidePicture'] = this.arrToStr(this.imgsArr3) || this.arrToStr(this.existImgList3)	
@@ -444,7 +460,6 @@
 				return _data
 			},
 			arrToStr(arr,fenge=','){
-				console.log(arr)
 				return arr.join(fenge)
 			},
 		},

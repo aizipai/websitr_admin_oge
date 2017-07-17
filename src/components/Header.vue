@@ -32,7 +32,7 @@
 		data(){
 			return{
 				title: '运营中心',
-				userName: '哈先生',
+				userName: '请登录',
 				userId: '123',
 				dialogVisible: false
 			}
@@ -40,6 +40,11 @@
 		methods: {
 			logout(){
 				console.log(this.userId)
+			},
+			getLoginInfo(){
+				const loginInfo = this.$store.getters.loginInfo
+				this.userName = loginInfo.userName || sessionStorage.getItem('userName')
+				console.log(loginInfo)
 			}
 		},
 		created(){
@@ -51,6 +56,8 @@
 					return false
 				}
 			})
+
+			this.getLoginInfo()
 		}
 	}
 	
@@ -70,6 +77,8 @@
 			text-align center
 			border-bottom 1px solid transparent
 			color #fff
+			text-indent -999999999px
+			background url(http://47.94.218.61/images/2017/07/17/2017071705551709907220.png) no-repeat center/contain
 			
 		.t-title
 			flex 1

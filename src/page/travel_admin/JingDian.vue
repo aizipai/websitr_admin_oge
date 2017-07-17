@@ -10,23 +10,22 @@
 		</div>
 
 		<!--列表-->
-		<el-table :data='allData' highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="800">
+		<el-table :data='allData' highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="500" >
 			<el-table-column align='center' prop="attractionId" label="ID" width='100' >
 			</el-table-column>
 			<el-table-column align='center' prop="attractionName" label="景点名称" width='150' >
 			</el-table-column>
 			<el-table-column  align='center' prop="tourLevel" label="旅游团级别">
 				<template scope = 'scope'>
-					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="attractionPicture" label="景点图片">
 				<template scope='scope'> 
-					<template v-for='src in scope.row.attractionPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
-					</template>
-					
+					<DialogCarousel :pictures='scope.row.attractionPicture'></DialogCarousel>
 				</template>	
+			</el-table-column>
+			<el-table-column align='center' prop="attractionDescribe" label="景点描述" show-overflow-tooltip width='200'>
 			</el-table-column>
 			
 			<el-table-column align='center' label="操作" width="150" fixed="right">
@@ -42,7 +41,7 @@
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
 			<el-form :model="addFormSendData" label-width="100px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="活动名称" prop="attractionName">
+				<el-form-item label="景点名称" prop="attractionName">
 					<el-input v-model="addFormSendData.attractionName"></el-input>
 				</el-form-item>
 				<el-form-item label="旅游团级别">
@@ -57,8 +56,11 @@
 				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
-					:existImgList='existImgList'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
+				</el-form-item>
+				<el-form-item label="景点描述">
+					<el-input type="textarea" v-model="addFormSendData.attractionDescribe"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -72,23 +74,26 @@
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
 			<el-form :model="editFormSendData" label-width="100px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="活动名称" prop="attractionName">
+				<el-form-item label="景点名称" prop="attractionName">
 					<el-input v-model="editFormSendData.attractionName"></el-input>
 				</el-form-item>
 				<el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
- 					   <el-option
- 					     v-for="item in tourLevelData"
- 					     :key="item.value"
- 					     :label="item.label"
- 					     :value="item.value">
- 					   </el-option>
- 					 </el-select>
+ 					  <el-option
+ 					    v-for="item in tourLevelData"
+ 					    :key="item.value"
+ 					    :label="item.label"
+ 					    :value="item.value">
+ 					  </el-option>
+ 	 				</el-select>
 				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
+				</el-form-item>
+				<el-form-item label="景点描述">
+					<el-input type="textarea" v-model="editFormSendData.attractionDescribe"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -106,9 +111,11 @@
 <script>
 
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
@@ -128,8 +135,9 @@
 
 				allData:[],
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 
 				//列表
@@ -142,6 +150,7 @@
 					attractionName:null,
 					attractionPicture:null,
 					tourLevel:null,
+					attractionDescribe:null,
 				},
 				addFormRules: {},
 				addLoading:false,
@@ -154,6 +163,7 @@
 					attractionName:null,
 					attractionPicture:null,
 					tourLevel:null,
+					attractionDescribe:null,
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -178,6 +188,8 @@
 			handleEdit(index, row){
 
 				this.editFormSendData = Object.assign({},row)
+
+				this.editFormSendData.tourLevel = parseInt(this.editFormSendData.tourLevel)
 
 				this.existImgList = row.attractionPicture
 
@@ -242,7 +254,12 @@
 								this.$alert(result.msg, '提示', {
           							confirmButtonText: '确定',
           							callback: () => {
-          							  
+          							  for(item in this.addFormSendData){
+          					 		   	item = null
+          					 		   }
+          					 		   for(item in this.editFormSendData){
+          					 		   	item = null
+          					 		   }
           							}
         						});
 							}
@@ -279,6 +296,7 @@
 						attractionId: row_data.attractionId,
 						attractionName: row_data.attractionName,
 						tourLevel: row_data.tourLevel,
+						attractionDescribe:row_data.attractionDescribe,
 						attractionPicture: row_data.attractionPicture?row_data.attractionPicture.split(',') : [],
 
 	

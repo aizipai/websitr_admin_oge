@@ -15,7 +15,7 @@
 			</el-table-column>
 			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
 				<template scope = 'scope'>
-					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="optAreaId" label="所在地区">
@@ -26,21 +26,25 @@
 			</el-table-column>
 			<el-table-column align='center' prop="optName" label="活动名称">
 			</el-table-column>
-			<el-table-column align='center' prop="optStartTime" label="活动开始时间">
+			<el-table-column align='center' prop="optStartTime" label="活动开始时间"  width='140' >
+				<template scope = 'scope'>
+					<span >{{scope.row.optStartTime|formatDate('yyyy-MM-dd hh:mm')}}</span>
+				</template>
+				
 			</el-table-column>
-			<el-table-column align='center' prop="optEndTime" label="活动结束时间">
+			<el-table-column align='center' prop="optEndTime" label="活动结束时间"  width='140' >
+				<template scope = 'scope'>
+					<span >{{scope.row.optEndTime|formatDate('yyyy-MM-dd hh:mm')}}</span>
+				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="optPrice" label="价格">
 			</el-table-column>
-			<el-table-column align='center' prop="optPicture" label="酒店图片" width='200'>
-				<template scope='scope'>
-					<template 
-					v-for='src in scope.row.optPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
-						@click='showBigImg(src)'>
-					</template>
+			<el-table-column align='center' prop="optPicture" label="活动图片" width='200'>
 					
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.optPicture'></DialogCarousel>
 				</template>	
+
 			</el-table-column>
 			<el-table-column align='center' prop="optRemark" label="备注" show-overflow-tooltip width='200'>
 			</el-table-column>
@@ -87,6 +91,7 @@
 					<el-row>
 						<el-col :span="11">
 							<el-date-picker
+							  :picker-options="pickerOptions0"
     						  v-model="addFormSendData.optStartTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
@@ -95,6 +100,8 @@
 						<el-col :span="2">——</el-col>
 						<el-col :span="11">
 							<el-date-picker
+							  :picker-options="pickerOptions1"
+							  :minTime='addFormSendData.optStartTime'
     						  v-model="addFormSendData.optEndTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
@@ -102,12 +109,12 @@
 						</el-col>
 					</el-row>
 				</el-form-item>
-				<el-form-item label="价格">
+				<el-form-item label="价格(美元)">
 					<el-input-number v-model="addFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
 				<el-form-item label="活动图片">
 					<upload-imgs 
-					:existImgList='existImgList'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="备注">
@@ -155,6 +162,7 @@
 					<el-row>
 						<el-col :span="11">
 							<el-date-picker
+							 :picker-options="pickerOptions0"
     						  v-model="editFormSendData.optStartTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
@@ -163,6 +171,7 @@
 						<el-col :span="2">——</el-col>
 						<el-col :span="11">
 							<el-date-picker
+							  :picker-options="pickerOptions0"
     						  v-model="editFormSendData.optEndTime"
     						  type="datetime"
     						  placeholder="选择日期时间">
@@ -170,7 +179,7 @@
 						</el-col>
 					</el-row>
 				</el-form-item>
-				<el-form-item label="价格">
+				<el-form-item label="价格(美元)">
 					<el-input-number v-model="editFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
 				<el-form-item label="活动图片">
@@ -199,12 +208,25 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
+
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
+				pickerOptions0: {
+        		  disabledDate(time) {
+        		    return time.getTime() < Date.now() - 8.64e7;
+        		  }
+        		},
+        		pickerOptions1: {
+        		  disabledDate(time) {
+        		    return time.getTime() < Date.now() - 8.64e7;
+        		  }
+        		},
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
@@ -225,8 +247,9 @@
 
 				listLoading:false,
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 				hotelArea: [
 					
@@ -238,16 +261,16 @@
 
 				addFormUrl: API_URL['ADD_ACT'],
 				addFormSendData:{
-					optAreaId:"",
-					optAttention:"",
-					optEndTime:"",
-					optName:"",
-					optPicture:"",
-					optPrice:"",
-					optRemark:'',
-					optStartTime:'',
-					tourLevel:'',
-					optId:''
+					optAreaId:null,
+					optAttention:null,
+					optEndTime:null,
+					optName:null,
+					optPicture:null,
+					optPrice:null,
+					optRemark:null,
+					optStartTime:null,
+					tourLevel:null,
+					optId:null,
 				},
 
 				//上传图片部分
@@ -257,16 +280,16 @@
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					optAreaId:"",
-					optAttention:"",
-					optEndTime:"",
-					optName:"",
-					optPicture:"",
-					optPrice:"",
-					optRemark:'',
-					optStartTime:'',
-					tourLevel:'',
-					optId:'',
+					optAreaId:null,
+					optAttention:null,
+					optEndTime:null,
+					optName:null,
+					optPicture:null,
+					optPrice:null,
+					optRemark:null,
+					optStartTime:null,
+					tourLevel:null,
+					optId:null,
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -321,7 +344,12 @@
 						this.$alert(result.msg, '提示', {
           					confirmButtonText: '确定',
           					callback: () => {
-          					  
+          					  for(item in this.addFormSendData){
+          					  	item = null
+          					  }
+          					  for(item in this.editFormSendData){
+          					  	item = null
+          					  }
           					}
         				});
 					}
@@ -349,7 +377,10 @@
 				var _url = form+'Url',
 						_params = form+'SendData'
 						
-				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
+				this[_params]['optPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)	
+
+				this[_params]['optStartTime'] = new Date(this[_params]['optStartTime']).getTime()
+				this[_params]['optEndTime'] = new Date(this[_params]['optEndTime']).getTime()
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
@@ -412,7 +443,6 @@
 			},
 
 		},
-		
 		mounted(){
 			this.getHotelArea()
 			

@@ -15,7 +15,7 @@
 			</el-table-column>
 			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
 				<template scope = 'scope'>
-					<span v-text='scope.row.tourLevel == 0? "普通" : "高端"'></span>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="hotelAreaId" label="所在地区">
@@ -34,11 +34,14 @@
 			<el-table-column align='center' prop="hotelRestaurantName" label="餐厅名称">
 			</el-table-column>
 			<el-table-column align='center' prop="carPicture" label="酒店图片">
-				<template scope='scope'>
+				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.hotelPicture'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
 						@click='showBigImg(src)'>
 					</template>
+				</template>	 -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.hotelPicture'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' prop="hotelRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
@@ -82,7 +85,7 @@
 				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
-					:existImgList='existImgList'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
 				<el-form-item label="房间数量">
@@ -172,9 +175,11 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
@@ -198,8 +203,9 @@
 
 				listLoading:false,
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 				hotelArea: [
 					
@@ -259,7 +265,6 @@
 				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
-						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
@@ -288,7 +293,12 @@
 						this.$alert(result.msg, '提示', {
           					confirmButtonText: '确定',
           					callback: () => {
-          					  
+          					  for(item in this.addFormSendData){
+          					  	item = null
+          					  }
+          					  for(item in this.editFormSendData){
+          					  	item = null
+          					  }
           					}
         				});
 					}
@@ -315,7 +325,6 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-						console.log(this.imgsArr)
 				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 
 				this.$refs[form].validate((valid)=>{

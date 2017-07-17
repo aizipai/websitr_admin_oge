@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<el-upload
+		  multiple
 		  class="upload-demo"
 		  ref="uploadImgs"
 		  :action="upLoadUrl"
@@ -12,6 +13,7 @@
 		  list-type="picture-card">
 		  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
 		  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
+		  <span class="attention-text">(注意：最多上传9张图片)</span>
 		</el-upload>	
 		<el-dialog v-model="dialogVisible" size="large" custom-class='img-dialog' :modal='showModal'>
 		  <img width="100%" :src="dialogImageUrl" alt="">
@@ -28,7 +30,7 @@
 				showModal: false,
 				dialogImageUrl: '',
         		dialogVisible: false,
-				upLoadUrl:'/api/admin/upload',
+				upLoadUrl:API_URL['UPLOAD_IMG'],
 				imgsList:[],
 			}
 		},
@@ -38,7 +40,12 @@
        			this.dialogVisible = true;
 			},
 			handleUploadSucc(response,file,fileList){
-				this.imgsList.push(response['url'])
+				if(this.imgsList.length<9){
+					this.imgsList.push(response['url'])
+				}else {
+					alert('最多上传9张图片')
+					return
+				}
 				this.$emit('uploadedImgs',this.imgsListToOut)
 			},
 			handleRemove(file,fileList){
@@ -48,7 +55,6 @@
 			
 				const arr = this.imgsListToOut.filter((sig_img_url)=>{
 					
-					console.log(sig_img_url!= target_url)
 					return sig_img_url!= target_url
 				})
 				
@@ -82,4 +88,6 @@
 <style lang='stylus' scoped>
 	.img-dialog
 		z-index 99999
+	.attention-text
+		color red
 </style>

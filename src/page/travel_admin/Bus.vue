@@ -13,8 +13,11 @@
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
 			<el-table-column align='center' prop="carId" label="游览车ID">
 			</el-table-column>
-			<!-- <el-table-column align='center' prop="tourLevel" label="旅游团级别">
-			</el-table-column> -->
+			<el-table-column  align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
+				</template>
+			</el-table-column>
 			<el-table-column align='center' prop="carName" label="游览车名称">
 			</el-table-column>
 			<el-table-column align='center' prop="carNo" label="游览车车牌">
@@ -22,10 +25,8 @@
 			<el-table-column align='center' prop="carType" label="游览车车款">
 			</el-table-column>
 			<el-table-column align='center' prop="carPicture" label="游览车图片">
-				<template scope='scope'>
-					<template v-for='src in scope.row.carPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
-					</template>
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.carPicture'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' prop="carSeatNum" label="游览车座位数">
@@ -48,16 +49,16 @@
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
 			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				<!-- <el-form-item label="旅游团级别">
+				<el-form-item label="旅游团级别">
 					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
- 				  <el-option
- 				    v-for="item in tourLevelData"
- 				    :key="item.value"
- 				    :label="item.label"
- 				    :value="item.value">
- 				  </el-option>
- 	 			</el-select>
-				</el-form-item> -->
+ 					   <el-option
+ 					     v-for="item in tourLevelData"
+ 					     :key="item.value"
+ 					     :label="item.label"
+ 					     :value="item.value">
+ 					   </el-option>
+ 					 </el-select>
+				</el-form-item>
 				<el-form-item label="游览车名称">
 					<el-input v-model="addFormSendData.carName" placeholder="请输入游览车名称"></el-input>
 				</el-form-item>
@@ -69,18 +70,18 @@
 				</el-form-item>
 				<el-form-item label="游览车图片">
 					<upload-imgs 
-					:existImgList='existImgList'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游览车座位数">
 					<el-input-number  v-model="addFormSendData.carSeatNum " 
 					placeholder="请输入游览车座位数"
-					:min='1' :max='7'></el-input-number >
+					:min='1'></el-input-number >
 				</el-form-item>
 				<el-form-item label="游览车行李数">
 					<el-input-number  v-model="addFormSendData.carLuggageNum" 
 					placeholder="请输入游览车行李数"
-					:min='1' :max='7'></el-input-number >
+					:min='1' ></el-input-number >
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="addFormSendData.carRemark"></el-input>
@@ -97,7 +98,7 @@
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
 			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
-				<!-- <el-form-item label="旅游团级别">
+				<el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
  				  <el-option
  				    v-for="item in tourLevelData"
@@ -106,7 +107,7 @@
  				    :value="item.value">
  				  </el-option>
  	 			</el-select>
-				</el-form-item> -->
+				</el-form-item>
 				<el-form-item label="游览车名称">
 					<el-input v-model="editFormSendData.carName" placeholder="请输入游览车名称"></el-input>
 				</el-form-item>
@@ -124,12 +125,12 @@
 				<el-form-item label="游览车座位数">
 					<el-input-number  v-model="editFormSendData.carSeatNum " 
 					placeholder="请输入游览车座位数"
-					:min='1' :max='7'></el-input-number >
+					:min='1'></el-input-number >
 				</el-form-item>
 				<el-form-item label="游览车行李数">
 					<el-input-number  v-model="editFormSendData.carLuggageNum" 
 					placeholder="请输入游览车行李数"
-					:min='1' :max='7'></el-input-number >
+					:min='1' ></el-input-number >
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="editFormSendData.carRemark"></el-input>
@@ -151,9 +152,11 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
@@ -177,8 +180,9 @@
 
 				listLoading:false,
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 				hotelArea: [
 					
@@ -198,7 +202,7 @@
 					carSeatNum:'',
 					carLuggageNum:'',
 					carRemark:'',	
-					// tourLevel:''				
+					tourLevel:''				
 				},
 
 				//上传图片部分
@@ -216,7 +220,7 @@
 					carSeatNum:'',
 					carLuggageNum:'',
 					carRemark:'',
-					// tourLevel:''
+					tourLevel:''
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -301,7 +305,12 @@
 								this.$alert(result.msg, '提示', {
           							confirmButtonText: '确定',
           							callback: () => {
-          							  
+          							  for(item in this.addFormSendData){
+          					  			item = null
+          					  		}
+          					  		for(item in this.editFormSendData){
+          					  			item = null
+          					  		}
           							}
         						});
 							}
@@ -334,6 +343,7 @@
 						carSeatNum:row_data.carSeatNum,
 						carLuggageNum:row_data.carLuggageNum,
 						carRemark:row_data.carRemark,
+						tourLevel:row_data.tourLevel,
 						carPicture: row_data.carPicture?row_data.carPicture.split(',') : [],
 					}
 					_data.push(_row_data)

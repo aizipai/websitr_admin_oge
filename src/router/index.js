@@ -12,6 +12,7 @@ import Home from '../page/Home.vue' //以下是Home子路由
       import Bus from '../page/travel_admin/Bus.vue'  //游览车
       import Tourist from '../page/travel_admin/Tourist.vue'  //导游
       import Activity from '../page/travel_admin/Activity.vue'  //自费活动
+      import Menu from '../page/travel_admin/Menu.vue'  //自费活动
       //3.订单管理
       import RightAdmin from '../page/RightAdmin.vue'
       //4.公共栏目
@@ -20,6 +21,7 @@ import Home from '../page/Home.vue' //以下是Home子路由
 
 import Login from '../page/Login.vue' //登录
 import NotFind from  '../page/404.vue' //404
+import Test from '../page/Test.vue' //测试
 
 
 Vue.use(Router)
@@ -51,7 +53,8 @@ export default new Router({
             { path: '/bus', component: Bus, name: '游览车' },
             { path: '/cruises', component: Cruises, name: '游轮' },
             { path: '/tourist', component: Tourist, name: '导游' },
-            { path: '/activity', component: Activity, name: '资费活动' },
+            { path: '/activity', component: Activity, name: '自费活动' },
+            { path: '/menu', component: Menu, name: '菜单' },
         ]
     },
     // {
@@ -81,6 +84,11 @@ export default new Router({
     	path: '/404',
       	name: 'NotFind',
       	component: NotFind	
+    },
+    {
+      path: '/test',
+        name: '测试',
+        component: Test  
     },
     {
     	path: '*',

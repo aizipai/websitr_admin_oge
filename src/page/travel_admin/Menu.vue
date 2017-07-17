@@ -1,48 +1,47 @@
 <template>
 	<div>
 		<div class="b-top">
-			<div class="t-tit">餐厅</div>
+			<div class="t-tit">菜单</div>
 			<el-button 
-				class="add-res"
+				class="add-menu"
   				type="primary" 
   				size="small" 
   				@click="addFormVisible = true">添加</el-button>
 		</div>
 		
 		<!-- 列表部分 -->
-		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
-			<el-table-column align='center' prop="resId" label="ID" >
+		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="500">
+			<el-table-column align='center' prop="hotelId" label="id" class='hide'>
 			</el-table-column>
 			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
 				<template scope = 'scope'>
 					<span>{{scope.row.tourLevel|handleLevel}}</span>
 				</template>
 			</el-table-column>
-			<el-table-column align='center' prop="resAreaId" label="所在地区">
+			<el-table-column align='center' prop="hotelAreaId" label="所在地区">
 				<template scope = 'scope'>
-					<span v-if='hotelArea[scope.row.resAreaId-1]'>
-					{{hotelArea[scope.row.resAreaId-1]["areaName"]}}</span>
+					<span v-if='hotelArea[scope.row.hotelAreaId-1]'>
+					{{hotelArea[scope.row.hotelAreaId-1]["areaName"]}}</span>
 					
 				</template>
-				
 			</el-table-column>
-			<el-table-column align='center' prop="resName" label="餐厅名称">
+			<el-table-column align='center' prop="hotelName" label="酒店名称">
 			</el-table-column>
-			<el-table-column align='center' prop="resPicture" label="餐厅图片">
-				<!-- <template scope='scope'>
-					<template v-for='src in scope.row.resPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
+			<el-table-column align='center' prop="hotelHomeNum" label="房间数量">
+			</el-table-column>
+			<el-table-column align='center' prop="hotelCharteredRoomNum" label="包房数量">
+			</el-table-column>
+			<el-table-column align='center' prop="hotelRestaurantName" label="餐厅名称">
+			</el-table-column>
+			<el-table-column align='center' prop="carPicture" label="酒店图片">
+				<template scope='scope'>
+					<template v-for='src in scope.row.hotelPicture'>
+						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
+						@click='showBigImg(src)'>
 					</template>
-				</template>	 -->
-				<template scope='scope'> 
-					<DialogCarousel :pictures='scope.row.resPicture'></DialogCarousel>
 				</template>	
 			</el-table-column>
-			<el-table-column align='center' prop="resSeatNum" label="座位数量">
-			</el-table-column>
-			<el-table-column align='center' prop="resToiletNum" label="洗手间数量">
-			</el-table-column>
-			<el-table-column align='center' prop="resRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
+			<el-table-column align='center' prop="hotelRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
 			</el-table-column>
 			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
@@ -69,7 +68,7 @@
  	 				</el-select>
 				</el-form-item>
 				<el-form-item label="所在地区">
-					<el-select v-model="addFormSendData.resAreaId" placeholder="请选择所在地区">
+					<el-select v-model="addFormSendData.hotelAreaId" placeholder="请选择所在地区">
  					  <el-option
  					    v-for="(item,index) in hotelArea"
  					    :key="item.areaId"
@@ -78,24 +77,29 @@
  					  </el-option>
  	 				</el-select>
  	 			</el-form-item>
-				<el-form-item label="餐厅名称">
-					<el-input v-model="addFormSendData.resName" placeholder="请输入餐厅名称"></el-input>
+				<el-form-item label="酒店名称">
+					<el-input v-model="addFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
 				</el-form-item>
-				<el-form-item label="餐厅图片">
+				<el-form-item label="上传图片">
 					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
-				<el-form-item label="座位数量">
-					<el-input-number v-model="addFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
+				<el-form-item label="房间数量">
+					<el-input-number v-model="addFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
 				</el-form-item>
-				<el-form-item label="洗手间数量">
-					<el-input-number  v-model="addFormSendData.resToiletNum" 
-					placeholder="请输入洗手间数量"
+				<el-form-item label="包房数量">
+					<el-input-number  v-model="addFormSendData.hotelCharteredRoomNum" 
+					placeholder="请输入包房数量"
 					:min='0'></el-input-number >
 				</el-form-item>
+				<el-form-item label="餐厅名称">
+					<el-input  v-model="addFormSendData.hotelRestaurantName" 
+					placeholder="请输入餐厅名称"
+					></el-input>
+				</el-form-item>
 				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="addFormSendData.resRemark"></el-input>
+					<el-input type="textarea" v-model="addFormSendData.hotelRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -120,7 +124,7 @@
  	 				</el-select>
 				</el-form-item>
 				<el-form-item label="所在地区">
-					<el-select v-model="editFormSendData.resAreaId" placeholder="请选择所在地区">
+					<el-select v-model="editFormSendData.hotelAreaId" placeholder="请选择所在地区">
  					  <el-option
  					    v-for="(item,index) in hotelArea"
  					    :key="item.areaId"
@@ -129,24 +133,29 @@
  					  </el-option>
  	 				</el-select>
  	 			</el-form-item>
-				<el-form-item label="餐厅名称">
-					<el-input v-model="editFormSendData.resName" placeholder="请输入餐厅名称"></el-input>
+				<el-form-item label="酒店名称">
+					<el-input v-model="editFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
 				</el-form-item>
-				<el-form-item label="餐厅图片">
+				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
-				<el-form-item label="座位数量">
-					<el-input-number v-model="editFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
+				<el-form-item label="房间数量">
+					<el-input-number v-model="editFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
 				</el-form-item>
-				<el-form-item label="洗手间数量">
-					<el-input-number  v-model="editFormSendData.resToiletNum" 
-					placeholder="请输入洗手间数量"
+				<el-form-item label="包房数量">
+					<el-input-number  v-model="editFormSendData.hotelCharteredRoomNum" 
+					placeholder="请输入包房数量"
 					:min='0'></el-input-number >
 				</el-form-item>
+				<el-form-item label="餐厅名称">
+					<el-input  v-model="editFormSendData.hotelRestaurantName" 
+					placeholder="请输入餐厅名称"
+					></el-input>
+				</el-form-item>
 				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="editFormSendData.resRemark"></el-input>
+					<el-input type="textarea" v-model="editFormSendData.hotelRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -163,19 +172,16 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
-	import DialogCarousel from '../../components/DialogCarousel.vue'
-
 	export default{
 		components:{
-			UploadImgs,
-			DialogCarousel
+			UploadImgs
 		},
 		data(){
 			return{
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: API_URL['GET_RES_LIST'],
+				getAllDataUrl: API_URL['GET_HOTEL_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -200,45 +206,46 @@
 					
 				],
 				addLoading:false,
-			
+
 				//新增部分所用数据
-				addFormRules: {},
 				addFormVisible: false,
 
-				addFormUrl: API_URL['ADD_RES'],
+				addFormUrl: API_URL['ADD_HOTEL'],
 				addFormSendData:{
-					resSeatNum:null,
-					resToiletNum:null,
-					resName:null,
-					resAreaId:null,
-					resPicture:null,
-					resRemark:null,
-					tourLevel:null,
+					hotelCharteredRoomNum:"",
+					hotelHomeNum:"",
+					hotelName:"",
+					hotelPicture:"",
+					hotelRemark:"",
+					hotelRestaurantName:"",
+					tourLevel:'',
+					hotelPicture:'',
+					hotelAreaId:'',
 				},
+
 				//上传图片部分
-				pictureArr: [],
 				dialogVisible: false,
 
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					attractionId:null,
-					resSeatNum:null,
-					resToiletNum:null,
-					resName:null,
-					resAreaId:null,
-					resPicture:null,
-					resRemark:null,
-					tourLevel:null,
+					hotelCharteredRoomNum:"",
+					hotelHomeNum:"",
+					hotelName:"",
+					hotelPicture:"",
+					hotelRemark:"",
+					hotelRestaurantName:"",
+					tourLevel:'',
+					hotelPicture:'',
+					hotelAreaId:'',
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:API_URL['ADD_RES'],
-
+				editFormUrl:API_URL['ADD_HOTEL'],
 				//删除
-				delUrl:API_URL['DEL_RES'],
-				
-			}	
+				delUrl:API_URL['DEL_HOTEL'],
+
+			}
 		},
 		methods:{
 			showBigImg(src){
@@ -253,13 +260,15 @@
 				this.$axios.get(API_URL['GET_AREA']).then((res)=>{
 					if(res.data.ok){
 						this.hotelArea = res.data.data
+						console.log(res.data)
 					}else{
 						console.log('获取地区失败')
 					}
 				})
 			},
+			
 			handleDel(index, row){
-				var id = row.resId
+				var id = row.hotelId
 				
 
 				this.$confirm('确定删除？', '提示', {
@@ -280,12 +289,7 @@
 						this.$alert(result.msg, '提示', {
           					confirmButtonText: '确定',
           					callback: () => {
-          					  for(item in this.addFormSendData){
-          					  	item = null
-          					  }
-          					  for(item in this.editFormSendData){
-          					  	item = null
-          					  }
+          					  
           					}
         				});
 					}
@@ -297,12 +301,13 @@
         		    message: '已取消删除'
         		  });          
         		});	
+
 			},
 			handleEdit(index, row){
 				
 				this.editFormSendData = Object.assign({},row)
 
-				this.existImgList = row.resPicture
+				this.existImgList = row.hotelPicture
 
 				this.editFormVisible = true
 				
@@ -311,8 +316,8 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-						
-				this[_params]['resPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
+						console.log(this.imgsArr)
+				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
@@ -354,14 +359,15 @@
 				for(let i=0; i< datas.length; i++){
 					const row_data = datas[i]
 					const _row_data = {
-						resId:row_data.resId,
-						resSeatNum:row_data.resSeatNum,
-						resToiletNum:row_data.resToiletNum,
-						resName:row_data.resName,
-						resAreaId:row_data.resAreaId,
+						hotelId:row_data.hotelId,
+						hotelCharteredRoomNum:row_data.hotelCharteredRoomNum,
+						hotelHomeNum:row_data.hotelHomeNum,
+						hotelName:row_data.hotelName,
+						hotelRemark:row_data.hotelRemark,
+						hotelRestaurantName:row_data.hotelRestaurantName,
 						tourLevel:row_data.tourLevel,
-						resRemark:row_data.resRemark,
-						resPicture: row_data.resPicture?row_data.resPicture.split(',') : [],
+						hotelAreaId:row_data.hotelAreaId,
+						hotelPicture: row_data.hotelPicture?row_data.hotelPicture.split(',') : [],
 					}
 					_data.push(_row_data)
 				}
@@ -386,10 +392,11 @@
 			display inline-block
 			font-size 16px
 			font-weight 700
-		.add-res
+		.add-menu
 			padding 8px 30px
 			margin-left 30px	
 
-
+	.hide
+		display none
 
 </style>

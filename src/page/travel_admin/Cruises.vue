@@ -13,9 +13,14 @@
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
 			<el-table-column align='center' prop="cruisesId" label="ID">
 			</el-table-column>
+			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
+				<template scope = 'scope'>
+					<span>{{scope.row.tourLevel|handleLevel}}</span>
+				</template>
+			</el-table-column>
 			<el-table-column align='center' prop="cruisesName" label="游轮名称">
 			</el-table-column>
-			<el-table-column align='center' prop="cruisesIchnography" label="游轮设施">
+			<el-table-column align='center' prop="cruisesFacilities" label="游轮设施">
 			</el-table-column>
 			<el-table-column align='center' prop="cruisesHomeNum" label="游轮总房间数">
 			</el-table-column>
@@ -23,19 +28,25 @@
 			</el-table-column>
 			<el-table-column align='center' prop="cruisesDoubleNum" label="游轮双人间数量">
 			</el-table-column>
-			<el-table-column align='center' prop="cruisesFacilities" label="游轮平面图">
-				<template scope='scope'>
-					<template v-for='src in scope.row.cruisesFacilities'>
+			<el-table-column align='center' prop="cruisesIchnography" label="游轮平面图">
+				<!-- <template scope='scope'>
+					<template v-for='src in scope.row.cruisesIchnography'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
 					</template>
+				</template>	 -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.cruisesIchnography'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' prop="cruisesPicture" label="游轮图片">
-				<template scope='scope'>
+				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.cruisesPicture'>
 						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
 					</template>
-				</template>	
+				</template>	 -->
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.cruisesPicture'></DialogCarousel>
+				</template>
 			</el-table-column>
 			<el-table-column align='center' prop="cruisesLong" label="游轮长(米)">
 			</el-table-column>
@@ -58,7 +69,7 @@
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
 			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				<!-- <el-form-item label="旅游团级别">
+				<el-form-item label="旅游团级别">
 					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
  					    v-for="item in tourLevelData"
@@ -67,13 +78,13 @@
  					    :value="item.value">
  					  </el-option>
  	 				</el-select>
-				</el-form-item> -->
+				</el-form-item>
 				
 				<el-form-item label="游轮名称">
 					<el-input v-model="addFormSendData.cruisesName" placeholder="请输入游轮名称"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮设施">
-					<el-input v-model="addFormSendData.cruisesIchnography" placeholder="请输入游轮设施"></el-input>
+					<el-input v-model="addFormSendData.cruisesFacilities" placeholder="请输入游轮设施"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮总房间数">
 					<el-input-number v-model="addFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数"></el-input-number>
@@ -86,12 +97,12 @@
 				</el-form-item>
 				<el-form-item label="游轮平面图">
 					<upload-imgs 
-					:existImgList='existImgList'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮图片">
 					<upload-imgs 
-					:existImgList='existImgList2'
+					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮长">
@@ -119,7 +130,7 @@
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
 			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
-				<!-- <el-form-item label="旅游团级别">
+				<el-form-item label="旅游团级别">
 					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
  					  <el-option
  					    v-for="item in tourLevelData"
@@ -128,13 +139,13 @@
  					    :value="item.value">
  					  </el-option>
  	 				</el-select>
-				</el-form-item> -->
+				</el-form-item>
 				
 				<el-form-item label="游轮名称">
 					<el-input v-model="editFormSendData.cruisesName" placeholder="请输入游轮名称"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮设施">
-					<el-input v-model="editFormSendData.cruisesIchnography" placeholder="请输入游轮设施"></el-input>
+					<el-input v-model="editFormSendData.cruisesFacilities" placeholder="请输入游轮设施"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮总房间数">
 					<el-input-number v-model="editFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数"></el-input-number>
@@ -183,9 +194,11 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			
@@ -212,8 +225,9 @@
 
 				listLoading:false,
 				tourLevelData:[
+					{value: 2,label: '全部'},
 					{value: 1,label: '高端'},
-					{value: 0,label: '普通'}
+					{value: 0,label: '标准'}
 				],
 				hotelArea: [
 					
@@ -236,6 +250,7 @@
 					cruisesHeight:null,
 					cruisesWidth:null,
 					cruisesIchnography:null,
+					tourLevel:null,
 				},
 
 				//上传图片部分
@@ -256,6 +271,7 @@
 					cruisesHeight:null,
 					cruisesWidth:null,
 					cruisesIchnography:null,
+					tourLevel:null,
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -300,7 +316,12 @@
 						this.$alert(result.msg, '提示', {
           					confirmButtonText: '确定',
           					callback: () => {
-          					  
+          					   for(item in this.addFormSendData){
+          					  	item = null
+          					  }
+          					  for(item in this.editFormSendData){
+          					  	item = null
+          					  }
           					}
         				});
 					}
@@ -319,7 +340,7 @@
 				var _url = form+'Url',
 						_params = form+'SendData'
 						
-				this[_params]['cruisesFacilities'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)				
+				this[_params]['cruisesIchnography'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)				
 				this[_params]['cruisesPicture'] = this.arrToStr(this.imgsArr2) || this.arrToStr(this.existImgList2)					
 
 				this.$refs[form].validate((valid)=>{
@@ -351,7 +372,7 @@
 				
 				this.editFormSendData = Object.assign({},row)
 
-				this.existImgList = row.cruisesFacilities
+				this.existImgList = row.cruisesIchnography
 				this.existImgList2 = row.cruisesPicture
 
 				this.editFormVisible = true
@@ -378,13 +399,13 @@
 						cruisesHomeNum:row_data.cruisesHomeNum,
 						cruisesDoubleNum:row_data.cruisesDoubleNum,
 						cruisesSimpleNum:row_data.cruisesSimpleNum,
-						cruisesFacilities:row_data.cruisesFacilities,
 						cruisesLong:row_data.cruisesLong,
 						cruisesHeight:row_data.cruisesHeight,
 						cruisesWidth:row_data.cruisesWidth,
-						cruisesIchnography:row_data.cruisesIchnography,
+						tourLevel:row_data.tourLevel,
+						cruisesFacilities:row_data.cruisesFacilities,
 						cruisesPicture: row_data.cruisesPicture?row_data.cruisesPicture.split(',') : [],
-						cruisesFacilities: row_data.cruisesFacilities?row_data.cruisesFacilities.split(',') : [],
+						cruisesIchnography: row_data.cruisesIchnography?row_data.cruisesIchnography.split(',') : [],
 
 					}
 					_data.push(_row_data)

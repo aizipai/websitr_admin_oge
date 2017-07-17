@@ -5,17 +5,17 @@
 		<el-form 
 		class="login-form" 
 		ref="loginForm" 
-		:model="loginForm" 
+		:model="loginFormData" 
 		:rules="validRule">
 		  <el-form-item prop="userName">
 		    <el-input 
-		    v-model="loginForm.userName" 
+		    v-model="loginFormData.userAccount" 
 		    placeholder="账号"></el-input>
 		  </el-form-item>
 		  <el-form-item prop="userPassW">
 		    <el-input 
 		    type="password"
-		    v-model="loginForm.userPassW" 
+		    v-model="loginFormData.userPassword" 
 		    placeholder="密码"></el-input>
 		  </el-form-item>
 		  <el-form-item style="width:100%;">
@@ -29,37 +29,60 @@
 	export default{
 		data(){
 			return{
+				loginUrl: API_URL['Login'],
 				logining:false,
-				loginForm: {
-					userName: 'dudu',
-					userPassW: "123"
+				loginFormData: {
+					userAccount: '15258264992',
+					userPassword: '123456'
 				},
 				validRule: {
-					userName: [
-						{required: true, message: '请输入账号', trigger: 'blur'}
+					userAccount: [
+						{required: true, message: '请输入账号',}
 					],
-					userPassW: [
-						{required: true, message: '请输入密码', trigger: 'blur'},
+					userPassword: [
+						{required: true, message: '请输入密码',},
 					]
 				}
 			}
 		},
 		methods: {
 			handleSubmit(){
-				var _this = this
 				this.$refs.loginForm.validate((valid)=>{
 					if(valid){
 						this.logining = true
-						var loginParams = {userName:this.loginForm.userName,userPassW:this.loginForm.userPassW}
-						//ajax 登录
-						setTimeout(()=>{
-							this.logining=false
-						},1000)
-						alert('可以登录')
+						const loginParams = this.loginFormData
+						this.$axios.post(this.loginUrl,loginParams).then((res)=>{
+							const result = res.data
+							if(result.ok){
+								
+								const loginInfo = {
+             					  userAccount: result.data.userAccount,
+             					  userName: result.data.userName,
+             					  userPassword:result.data.userPassword,
+             					}
+								this.$store.commit('SET_LOGININFO', loginInfo)
+
+								sessionStorage.setItem('userAccount',result.data.userAccount)
+								sessionStorage.setItem('userName',result.data.userName)
+								sessionStorage.setItem('userPassword',result.data.userPassword)
+
+								this.$message('登录成功！');
+
+								this.$router.push({path:'/'})
+
+
+							}else{
+								this.$message.error('登录失败，检查一下账号密码吧...');
+							}
+						}).catch((err)=>{
+							console.log(err)
+						})
+
 					}else{
 						alert('不可以登录')
 					}
 				})
+
 			}
 		}
 	}
