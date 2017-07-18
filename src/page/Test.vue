@@ -42,7 +42,7 @@
 
       renderContent(h, { node, data, store }) {
         console.log(node)
-        return (
+        // return (
           // <span>
           //   <span>
           //     <span>{data.label}</span>
