@@ -1,19 +1,21 @@
 
 
-const URL_PRE = ''
+const URL_PRE = '/api'
 
-const Login =URL_PRE +  'user/login'//登录
+const Login =URL_PRE +  '/user/login'//登录
+const Logout =URL_PRE +  '/user/logout'//登录
 
 const GET_AREA = URL_PRE + '/area/getAll'  //获取所有地区
 const UPLOAD_IMG = URL_PRE + '/admin/upload'  //上传图片
 
 //用户管理
-const GET_USER_LIST = URL_PRE +'user/getFormValue' //获取用户列表
+const GET_USER_LIST = URL_PRE +'/user/getFormValue' //获取用户列表
 const DO_REGESTER = URL_PRE +'/user/register' //注册
 const GET_COMPANY =URL_PRE + '/company/getCompany'//获取公司
 const GET_DEPTMENT = URL_PRE +'/company/getDepartment/'//根据公司id获取部门
 const ADD_COM = URL_PRE +'/company/addCompany'//添加公司
-const ADD_DEPART = URL_PRE +'company/addDepartment'//添加部门
+const ADD_DEPART = URL_PRE +'/company/addDepartment'//添加部门
+const GET_USER = URL_PRE +'/user/findUserListByCAndD/'//根据公司和部门获取人员
 
 // 景点
 const GET_ATTR_LIST =URL_PRE +'/attraction/findAllAttraction'
@@ -53,6 +55,7 @@ const DEL_TOUR =URL_PRE +'/guide/del/'
 export default{
 
 	Login,
+	Logout,
 
 	GET_AREA,
 	UPLOAD_IMG,
@@ -63,6 +66,7 @@ export default{
 	GET_DEPTMENT,
 	ADD_COM,
 	ADD_DEPART,
+	GET_USER,
 	//景点 
 	GET_ATTR_LIST,
 	ADD_ATTR,

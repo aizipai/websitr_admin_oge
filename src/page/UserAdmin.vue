@@ -40,6 +40,8 @@
 
 		  </el-collapse-item>
 		</el-collapse>
+
+		
 		
 
 		<el-dialog title="添加公司" :visible.sync="addCompany" size='tiny'>

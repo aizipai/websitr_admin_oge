@@ -1,7 +1,7 @@
 
 <template>
 	<div class="login-wrapper">
-		<!-- <div class="title">管理系统登录</div> -->
+		<div class="title">欢迎进入运营后台</div>
 		<el-form 
 		class="login-form" 
 		ref="loginForm" 
@@ -73,9 +73,12 @@
 
 							}else{
 								this.$message.error('登录失败，检查一下账号密码吧...');
+								this.logining = false
 							}
 						}).catch((err)=>{
+							this.logining = false
 							console.log(err)
+							alert(err)
 						})
 
 					}else{

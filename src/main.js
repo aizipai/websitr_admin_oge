@@ -37,18 +37,13 @@ Vue.config.productionTip = false
 
 router.beforeEach((to,from,next)=>{
 
-	// console.log(to)
-	// console.log(from)
+	
 	// if(!sessionStorage.getItem('userAccount') || !sessionStorage.getItem('userPassword')){
-	// 	if(!flag){
-	// 		next({path:'/login'})
-	// 	}else{
-	// 		next()
-	// 	}
+	// 	next({path:'/login'})
 	// }else{
-	// 	next()
+		next()
 	// }
-	next()
+	
 })
 
 /* eslint-disable no-new */
@@ -64,8 +59,16 @@ new Vue({
   		if(!sessionStorage.getItem('userAccount') || !sessionStorage.getItem('userPassword')){
   			this.$message('请登录')
   			this.$router.push({ path: '/login' })
+        return
   		}
+      if(this.$route.path == '/login'){
+        this.$router.push({ path: '/' })
+      }
+      
   	}
+  },
+  watch:{
+    "$route":'checkLogin'
   },
   mounted(){
   	this.checkLogin()

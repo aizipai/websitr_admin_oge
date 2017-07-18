@@ -31,6 +31,7 @@
 		props:[],
 		data(){
 			return{
+				logout_url:API_URL['Logout'],
 				title: '运营中心',
 				userName: '请登录',
 				userId: '123',
@@ -39,7 +40,13 @@
 		},
 		methods: {
 			logout(){
-				console.log(this.userId)
+				
+				sessionStorage.removeItem('userAccount')
+				sessionStorage.removeItem('userName')
+				sessionStorage.removeItem('userPassword')
+
+				this.$router.push({path: '/login'})
+				
 			},
 			getLoginInfo(){
 				const loginInfo = this.$store.getters.loginInfo
