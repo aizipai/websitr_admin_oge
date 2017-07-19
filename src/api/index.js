@@ -1,9 +1,9 @@
 
 
-const URL_PRE = '/api'
+const URL_PRE = ''
 
 const Login =URL_PRE +  '/user/login'//登录
-const Logout =URL_PRE +  '/user/logout'//登录
+const Logout =URL_PRE +  '/user/logout'//退出
 
 const GET_AREA = URL_PRE + '/area/getAll'  //获取所有地区
 const UPLOAD_IMG = URL_PRE + '/admin/upload'  //上传图片
@@ -16,6 +16,10 @@ const GET_DEPTMENT = URL_PRE +'/company/getDepartment/'//根据公司id获取部
 const ADD_COM = URL_PRE +'/company/addCompany'//添加公司
 const ADD_DEPART = URL_PRE +'/company/addDepartment'//添加部门
 const GET_USER = URL_PRE +'/user/findUserListByCAndD/'//根据公司和部门获取人员
+
+const DEL_C_D = URL_PRE +'/company/del/'//删除公司或部门
+
+
 
 // 景点
 const GET_ATTR_LIST =URL_PRE +'/attraction/findAllAttraction'
@@ -67,6 +71,7 @@ export default{
 	ADD_COM,
 	ADD_DEPART,
 	GET_USER,
+	DEL_C_D,
 	//景点 
 	GET_ATTR_LIST,
 	ADD_ATTR,
