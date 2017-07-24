@@ -29,13 +29,13 @@
 			<el-table-column align='center' prop="resName" label="餐厅名称">
 			</el-table-column>
 			<el-table-column align='center' prop="resPicture" label="餐厅图片">
-				<!-- <template scope='scope'>
-					<template v-for='src in scope.row.resPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}" @click='showBigImg(src)'>
-					</template>
-				</template>	 -->
 				<template scope='scope'> 
 					<DialogCarousel :pictures='scope.row.resPicture'></DialogCarousel>
+				</template>	
+			</el-table-column>
+			<el-table-column align='center' prop="resPicture" label="餐厅菜单">
+				<template scope='scope'> 
+					<router-link :to='"/menu/"+ scope.row.resId'>查看餐厅菜单</router-link>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' prop="resSeatNum" label="座位数量">

@@ -56,6 +56,7 @@ new Vue({
   components: { App },
   methods:{
   	checkLogin(){
+      console.log(this.$route)
   		if(!sessionStorage.getItem('userAccount') || !sessionStorage.getItem('userPassword')){
   			this.$message('请登录')
   			this.$router.push({ path: '/login' })

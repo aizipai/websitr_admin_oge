@@ -8,9 +8,29 @@
   				<el-submenu :index='item.path'>
   					<template slot="title"><i class="el-icon-menu"></i>{{item.name}}</template>
   					<template v-for="childItem in item.children">
-  						<el-menu-item :index="childItem.path">{{childItem.name}}</el-menu-item>
+						
+						<template 
+  						v-if="childItem.children">
+  							<el-submenu :index='childItem.path'>
+  								<template slot="title"><i class="el-icon-menu"></i>{{childItem.name}}</template>
+  								<template v-for="subChildItem in childItem.children">
+			
+			
+  									<el-menu-item :index="subChildItem.path">{{subChildItem.name}}</el-menu-item>
+			
+  								</template>
+      						</el-submenu>
+  						</template>
+  						<template 
+  						v-else>
+  							<el-menu-item 
+  							:index="childItem.path"><i class="el-icon-menu"></i>{{childItem.name}}</el-menu-item>
+  						</template>
+
+  						
+
   					</template>
-      		</el-submenu>
+      			</el-submenu>
   			</template>
   			<template 
   			v-else>
@@ -30,7 +50,7 @@
 				menuData: [
 					{name: '用户管理',path: '/useradmin'},
 					{
-						name: '行程管理',
+						name: '行程管理', 
 						path: '/jingdian',
 						children:[
 							{name:'景点',path:'/jingdian'},
@@ -43,7 +63,26 @@
 							{name:'自费活动',path:'/activity'},
 						]
 					},
-					{name: '公共栏目',path: '/commonpro'}
+					{
+						name: '公共栏目',
+						path: '/commonpro',
+						children:[
+							{name:'基本信息',path:'/commonpro/BaseInfo',
+							  children:[
+							  	{name:'行程',path:'/Trip'},
+							  	{name:'自费表格',path:'/SelfTable'},
+							  	{name:'出团计划',path:'/TPlan'},
+							  	{name:'差价表',path:'/ChaJiaTable'},
+							  	{name:'热气球须知',path:'/HotBall'},
+							  	{name:'埃及行程须知',path:'/EgyptTrip'},
+							  	{name:'导游评价模板',path:'/TC'},
+							  	{name:'分房表模板',path:'/FenFang'},
+							  ]
+							},
+							{name:'开会内容',path:'/MeetingCont'},
+							{name:'临时公告',path:'/TempNotice'},
+						]
+					}
 				]
 			}
 		},

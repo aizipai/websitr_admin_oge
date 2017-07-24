@@ -11,34 +11,13 @@
 		
 		<!-- 列表部分 -->
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="500">
-			<el-table-column align='center' prop="hotelId" label="id" class='hide'>
+			<el-table-column align='center' prop="hotelId" label="id" width='150'>
 			</el-table-column>
-			<el-table-column align='center' prop="tourLevel" label="旅游团级别">
-				<template scope = 'scope'>
-					<span>{{scope.row.tourLevel|handleLevel}}</span>
-				</template>
+			<el-table-column align='center' prop="hotelId" label="菜单名称">
 			</el-table-column>
-			<el-table-column align='center' prop="hotelAreaId" label="所在地区">
-				<template scope = 'scope'>
-					<span v-if='hotelArea[scope.row.hotelAreaId-1]'>
-					{{hotelArea[scope.row.hotelAreaId-1]["areaName"]}}</span>
-					
-				</template>
-			</el-table-column>
-			<el-table-column align='center' prop="hotelName" label="酒店名称">
-			</el-table-column>
-			<el-table-column align='center' prop="hotelHomeNum" label="房间数量">
-			</el-table-column>
-			<el-table-column align='center' prop="hotelCharteredRoomNum" label="包房数量">
-			</el-table-column>
-			<el-table-column align='center' prop="hotelRestaurantName" label="餐厅名称">
-			</el-table-column>
-			<el-table-column align='center' prop="carPicture" label="酒店图片">
-				<template scope='scope'>
-					<template v-for='src in scope.row.hotelPicture'>
-						<img :src='src' :style="{width:imgWidth,height:imgHeight}"
-						@click='showBigImg(src)'>
-					</template>
+			<el-table-column align='center' prop="resPicture" label="菜单图片">
+				<template scope='scope'> 
+					<DialogCarousel :pictures='scope.row.resPicture'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' prop="hotelRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
@@ -57,47 +36,17 @@
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
 			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				<el-form-item label="旅游团级别">
-					<el-select v-model="addFormSendData.tourLevel" placeholder="请选择旅游团级别">
- 					  <el-option
- 					    v-for="item in tourLevelData"
- 					    :key="item.value"
- 					    :label="item.label"
- 					    :value="item.value">
- 					  </el-option>
- 	 				</el-select>
+				
+				<el-form-item label="餐厅名称">
+					<el-input v-model="addFormSendData.resName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
-				<el-form-item label="所在地区">
-					<el-select v-model="addFormSendData.hotelAreaId" placeholder="请选择所在地区">
- 					  <el-option
- 					    v-for="(item,index) in hotelArea"
- 					    :key="item.areaId"
- 					    :label="item.areaName"
- 					    :value="item.areaId">
- 					  </el-option>
- 	 				</el-select>
- 	 			</el-form-item>
-				<el-form-item label="酒店名称">
-					<el-input v-model="addFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
-				</el-form-item>
+
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
-				<el-form-item label="房间数量">
-					<el-input-number v-model="addFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
-				</el-form-item>
-				<el-form-item label="包房数量">
-					<el-input-number  v-model="addFormSendData.hotelCharteredRoomNum" 
-					placeholder="请输入包房数量"
-					:min='0'></el-input-number >
-				</el-form-item>
-				<el-form-item label="餐厅名称">
-					<el-input  v-model="addFormSendData.hotelRestaurantName" 
-					placeholder="请输入餐厅名称"
-					></el-input>
-				</el-form-item>
+				
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="addFormSendData.hotelRemark"></el-input>
 				</el-form-item>
@@ -113,47 +62,16 @@
 		:visible.sync="editFormVisible"
 		ref="editFormDialog">
 			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
-				<el-form-item label="旅游团级别">
-					<el-select v-model="editFormSendData.tourLevel" placeholder="请选择旅游团级别">
- 					  <el-option
- 					    v-for="item in tourLevelData"
- 					    :key="item.value"
- 					    :label="item.label"
- 					    :value="item.value">
- 					  </el-option>
- 	 				</el-select>
+				<el-form-item label="餐厅名称">
+					<el-input v-model="addFormSendData.resName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
-				<el-form-item label="所在地区">
-					<el-select v-model="editFormSendData.hotelAreaId" placeholder="请选择所在地区">
- 					  <el-option
- 					    v-for="(item,index) in hotelArea"
- 					    :key="item.areaId"
- 					    :label="item.areaName"
- 					    :value="item.areaId">
- 					  </el-option>
- 	 				</el-select>
- 	 			</el-form-item>
-				<el-form-item label="酒店名称">
-					<el-input v-model="editFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
-				</el-form-item>
+
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
 				</el-form-item>
-				<el-form-item label="房间数量">
-					<el-input-number v-model="editFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
-				</el-form-item>
-				<el-form-item label="包房数量">
-					<el-input-number  v-model="editFormSendData.hotelCharteredRoomNum" 
-					placeholder="请输入包房数量"
-					:min='0'></el-input-number >
-				</el-form-item>
-				<el-form-item label="餐厅名称">
-					<el-input  v-model="editFormSendData.hotelRestaurantName" 
-					placeholder="请输入餐厅名称"
-					></el-input>
-				</el-form-item>
+				
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="editFormSendData.hotelRemark"></el-input>
 				</el-form-item>

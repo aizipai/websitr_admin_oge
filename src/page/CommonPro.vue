@@ -1,3 +1,3 @@
 <template>
-	<div>common——bar</div>
+	<router-view></router-view>
 </template>

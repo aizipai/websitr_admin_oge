@@ -264,6 +264,7 @@
         console.log(data);
       },
       loadNode(node, resolve) {
+        console.log(node.data)
         if (node.level === 0) {
           // return resolve([{ name: 'region1' }, { name: 'region2' }]);
         }
@@ -275,7 +276,7 @@
           
         }else if(node.level == 2){
 
-          this.doGetUserData(node.data.companyId,node.data.departmentId,resolve)
+          this.doGetUserData(node.data.companyId,node.data.id,resolve)
         }
       },
       doGetCompanyData(){
