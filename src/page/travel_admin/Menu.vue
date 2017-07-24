@@ -11,16 +11,18 @@
 		
 		<!-- 列表部分 -->
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;"  max-height="500">
-			<el-table-column align='center' prop="hotelId" label="id" width='150'>
+			<el-table-column align='center' prop="resId" label="餐厅id" width='100' >
 			</el-table-column>
-			<el-table-column align='center' prop="hotelId" label="菜单名称">
+			<el-table-column align='center' prop="menuId" label="菜单id" width='100' >
 			</el-table-column>
-			<el-table-column align='center' prop="resPicture" label="菜单图片">
+			<el-table-column align='center' prop="menuName" label="菜单名称">
+			</el-table-column>
+			<el-table-column align='center' prop="menuPic" label="菜单图片">
 				<template scope='scope'> 
-					<DialogCarousel :pictures='scope.row.resPicture'></DialogCarousel>
+					<DialogCarousel :pictures='scope.row.menuPic'></DialogCarousel>
 				</template>	
 			</el-table-column>
-			<el-table-column align='center' prop="hotelRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
+			<el-table-column align='center' prop="menuRemark" label="备注/注意事项" show-overflow-tooltip width='300'>
 			</el-table-column>
 			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
@@ -38,7 +40,7 @@
 			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
 				
 				<el-form-item label="餐厅名称">
-					<el-input v-model="addFormSendData.resName" placeholder="请输入菜单名称"></el-input>
+					<el-input v-model="addFormSendData.menuName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
 
 				<el-form-item label="上传图片">
@@ -48,7 +50,7 @@
 				</el-form-item>
 				
 				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="addFormSendData.hotelRemark"></el-input>
+					<el-input type="textarea" v-model="addFormSendData.menuRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -63,7 +65,7 @@
 		ref="editFormDialog">
 			<el-form :model="editFormSendData" label-width="150px" ref="editForm" >
 				<el-form-item label="餐厅名称">
-					<el-input v-model="addFormSendData.resName" placeholder="请输入菜单名称"></el-input>
+					<el-input v-model="editFormSendData.menuName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
 
 				<el-form-item label="上传图片">
@@ -73,7 +75,7 @@
 				</el-form-item>
 				
 				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="editFormSendData.hotelRemark"></el-input>
+					<el-input type="textarea" v-model="editFormSendData.menuRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -90,16 +92,19 @@
 </template>
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
+	import DialogCarousel from '../../components/DialogCarousel.vue'
+
 	export default{
 		components:{
-			UploadImgs
+			UploadImgs,
+			DialogCarousel
 		},
 		data(){
 			return{
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
-				getAllDataUrl: API_URL['GET_HOTEL_LIST'],
+				getAllDataUrl: API_URL['GET_MENU_LIST'],
 				getAllDataParams: {
 					page: 1,
 					limit: 10
@@ -128,17 +133,12 @@
 				//新增部分所用数据
 				addFormVisible: false,
 
-				addFormUrl: API_URL['ADD_HOTEL'],
+				addFormUrl: API_URL['ADD_MENU'],
 				addFormSendData:{
-					hotelCharteredRoomNum:"",
-					hotelHomeNum:"",
-					hotelName:"",
-					hotelPicture:"",
-					hotelRemark:"",
-					hotelRestaurantName:"",
-					tourLevel:'',
-					hotelPicture:'',
-					hotelAreaId:'',
+					resId:this.$route.params.id,
+					menuName:"",
+					menuPic:"",
+					menuRemark:"",
 				},
 
 				//上传图片部分
@@ -147,21 +147,17 @@
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					hotelCharteredRoomNum:"",
-					hotelHomeNum:"",
-					hotelName:"",
-					hotelPicture:"",
-					hotelRemark:"",
-					hotelRestaurantName:"",
-					tourLevel:'',
-					hotelPicture:'',
-					hotelAreaId:'',
+					resId:"",
+					menuId:"",
+					menuName:"",
+					menuPic:"",
+					menuRemark:"",
 				},
 				editFormRules: {},
 				editLoading:false,
-				editFormUrl:API_URL['ADD_HOTEL'],
+				editFormUrl:API_URL['ADD_MENU'],
 				//删除
-				delUrl:API_URL['DEL_HOTEL'],
+				delUrl:API_URL['DEL_MENU'],
 
 			}
 		},
@@ -186,7 +182,7 @@
 			},
 			
 			handleDel(index, row){
-				var id = row.hotelId
+				var id = row.menuId
 				
 
 				this.$confirm('确定删除？', '提示', {
@@ -194,6 +190,7 @@
         		  cancelButtonText: '取消',
         		  type: 'warning'
         		}).then(() => {
+
         			this.$axios.get(this.delUrl+id).then((res)=>{
 					var result = res.data
 					if(result.ok){
@@ -222,10 +219,10 @@
 
 			},
 			handleEdit(index, row){
-				
+				console.log(row)
 				this.editFormSendData = Object.assign({},row)
 
-				this.existImgList = row.hotelPicture
+				this.existImgList = row.menuPic
 
 				this.editFormVisible = true
 				
@@ -234,8 +231,8 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
-						console.log(this.imgsArr)
-				this[_params]['hotelPicture'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
+
+				this[_params]['menuPic'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 
 				this.$refs[form].validate((valid)=>{
 					if(valid){
@@ -264,7 +261,9 @@
 			},
 			getAllData(){
 				this.listLoading = true
-				this.$axios.get(this.getAllDataUrl,this.getAllDataParams).then((res)=>{
+				const _url = this.getAllDataUrl + this.$route.params.id
+
+				this.$axios.get(_url,this.getAllDataParams).then((res)=>{
 					this.listLoading = false
 					var result = res.data
 					this.allData = this.handleData(result.data)
@@ -277,15 +276,11 @@
 				for(let i=0; i< datas.length; i++){
 					const row_data = datas[i]
 					const _row_data = {
-						hotelId:row_data.hotelId,
-						hotelCharteredRoomNum:row_data.hotelCharteredRoomNum,
-						hotelHomeNum:row_data.hotelHomeNum,
-						hotelName:row_data.hotelName,
-						hotelRemark:row_data.hotelRemark,
-						hotelRestaurantName:row_data.hotelRestaurantName,
-						tourLevel:row_data.tourLevel,
-						hotelAreaId:row_data.hotelAreaId,
-						hotelPicture: row_data.hotelPicture?row_data.hotelPicture.split(',') : [],
+						menuPic: row_data.menuPic?row_data.menuPic.split(',') : [],
+						resId:row_data.resId,
+						menuId:row_data.menuId,
+						menuName:row_data.menuName,
+						menuRemark	:row_data.menuRemark,
 					}
 					_data.push(_row_data)
 				}
@@ -299,6 +294,7 @@
 		mounted(){
 			this.getAllData()
 			this.getHotelArea()
+			console.log(this.$route)
 		}
 	}
 </script>

@@ -19,7 +19,10 @@ const GET_USER = URL_PRE +'/user/findUserListByCAndD/'//根据公司和部门获
 
 const DEL_C_D = URL_PRE +'/company/del/'//删除公司或部门
 
-
+//菜单
+const GET_MENU_LIST =URL_PRE +'/restaurant/getMenuByResId/'
+const ADD_MENU =URL_PRE +'/restaurant/addMenu'
+const DEL_MENU =URL_PRE +'/restaurant/delMenu/'
 
 // 景点
 const GET_ATTR_LIST =URL_PRE +'/attraction/findAllAttraction'
@@ -72,6 +75,10 @@ export default{
 	ADD_DEPART,
 	GET_USER,
 	DEL_C_D,
+	//菜单
+	GET_MENU_LIST,
+	ADD_MENU,
+	DEL_MENU,
 	//景点 
 	GET_ATTR_LIST,
 	ADD_ATTR,
