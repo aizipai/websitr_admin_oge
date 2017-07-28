@@ -42,15 +42,13 @@
 				<el-form-item label="餐厅名称">
 					<el-input v-model="addFormSendData.menuName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
-
+				<el-form-item label="备注/注意事项">
+					<el-input type="textarea" v-model="addFormSendData.menuRemark"></el-input>
+				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
-				</el-form-item>
-				
-				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="addFormSendData.menuRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -67,15 +65,13 @@
 				<el-form-item label="餐厅名称">
 					<el-input v-model="editFormSendData.menuName" placeholder="请输入菜单名称"></el-input>
 				</el-form-item>
-
+				<el-form-item label="备注/注意事项">
+					<el-input type="textarea" v-model="editFormSendData.menuRemark"></el-input>
+				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
-				</el-form-item>
-				
-				<el-form-item label="备注/注意事项">
-					<el-input type="textarea" v-model="editFormSendData.menuRemark"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">

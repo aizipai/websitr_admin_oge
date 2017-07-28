@@ -112,11 +112,7 @@
 				<el-form-item label="价格(美元)">
 					<el-input-number v-model="addFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
-				<el-form-item label="活动图片">
-					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="备注">
 					<el-input type="textarea" v-model="addFormSendData.optRemark"></el-input>
 				</el-form-item>
@@ -124,6 +120,11 @@
 					<el-input type="textarea" v-model="addFormSendData.optAttention"></el-input>
 				</el-form-item>
 				</el-form>
+				<el-form-item label="活动图片">
+					<upload-imgs 
+					:existImgList='[]'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
+				</el-form-item>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="submitForm('addForm')" :loading="addLoading">提交</el-button>
@@ -182,11 +183,7 @@
 				<el-form-item label="价格(美元)">
 					<el-input-number v-model="editFormSendData.optPrice" placeholder="请输入价格"></el-input-number>
 				</el-form-item>
-				<el-form-item label="活动图片">
-					<upload-imgs 
-					:existImgList='existImgList'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="备注">
 					<el-input type="textarea" v-model="editFormSendData.optRemark"></el-input>
 				</el-form-item>
@@ -194,6 +191,11 @@
 					<el-input type="textarea" v-model="editFormSendData.optAttention"></el-input>
 				</el-form-item>
 				</el-form>
+				<el-form-item label="活动图片">
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
+				</el-form-item>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="submitForm('editForm')" :loading="editLoading">提交</el-button>

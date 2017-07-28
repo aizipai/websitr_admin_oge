@@ -1,6 +1,6 @@
 
 
-const URL_PRE = '/api'
+const URL_PRE = ''
 
 const Login =URL_PRE +  '/user/login'//登录
 const Logout =URL_PRE +  '/user/logout'//退出

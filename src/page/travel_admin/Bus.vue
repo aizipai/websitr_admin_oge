@@ -68,11 +68,7 @@
 				<el-form-item label="游览车车款">
 					<el-input v-model="addFormSendData.carType" placeholder="请输入游览车车款"></el-input>
 				</el-form-item>
-				<el-form-item label="游览车图片">
-					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="游览车座位数">
 					<el-input-number  v-model="addFormSendData.carSeatNum " 
 					placeholder="请输入游览车座位数"
@@ -85,6 +81,11 @@
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="addFormSendData.carRemark"></el-input>
+				</el-form-item>
+				<el-form-item label="游览车图片">
+					<upload-imgs 
+					:existImgList='[]'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -117,11 +118,7 @@
 				<el-form-item label="游览车车款">
 					<el-input v-model="editFormSendData.carType" placeholder="请输入游览车车款"></el-input>
 				</el-form-item>
-				<el-form-item label="游览车图片">
-					<upload-imgs 
-					:existImgList='existImgList'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="游览车座位数">
 					<el-input-number  v-model="editFormSendData.carSeatNum " 
 					placeholder="请输入游览车座位数"
@@ -134,6 +131,11 @@
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="editFormSendData.carRemark"></el-input>
+				</el-form-item>
+				<el-form-item label="游览车图片">
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">

@@ -81,11 +81,7 @@
 				<el-form-item label="餐厅名称">
 					<el-input v-model="addFormSendData.resName" placeholder="请输入餐厅名称"></el-input>
 				</el-form-item>
-				<el-form-item label="餐厅图片">
-					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="座位数量">
 					<el-input-number v-model="addFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
 				</el-form-item>
@@ -96,6 +92,11 @@
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="addFormSendData.resRemark"></el-input>
+				</el-form-item>
+				<el-form-item label="餐厅图片">
+					<upload-imgs 
+					:existImgList='[]'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -132,11 +133,7 @@
 				<el-form-item label="餐厅名称">
 					<el-input v-model="editFormSendData.resName" placeholder="请输入餐厅名称"></el-input>
 				</el-form-item>
-				<el-form-item label="餐厅图片">
-					<upload-imgs 
-					:existImgList='existImgList'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="座位数量">
 					<el-input-number v-model="editFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
 				</el-form-item>
@@ -147,6 +144,11 @@
 				</el-form-item>
 				<el-form-item label="备注/注意事项">
 					<el-input type="textarea" v-model="editFormSendData.resRemark"></el-input>
+				</el-form-item>
+				<el-form-item label="餐厅图片">
+					<upload-imgs 
+					:existImgList='existImgList'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">

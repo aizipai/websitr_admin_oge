@@ -3,12 +3,12 @@
   		<a href="#" class="t-logo">埃及旅游</a>
   		<div class='t-title'>{{title}}</div>
   		<div class='b-info'>
-  			<span class="t-name">你好，{{userName}}</span>
+  			<span class="t-name">你好(hello)，{{userName}}</span>
   			<el-button 
   				type="primary" 
   				size="small" 
   				class='btn-logout'
-  				@click="dialogVisible = true">退出</el-button>
+  				@click="dialogVisible = true">Logout</el-button>
   		</div>
 		</el-row>
 
@@ -32,7 +32,7 @@
 		data(){
 			return{
 				logout_url:API_URL['Logout'],
-				title: '运营中心',
+				title: '运营中心(Operation center)',
 				userName: '请登录',
 				userId: '123',
 				dialogVisible: false

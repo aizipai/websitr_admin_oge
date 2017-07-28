@@ -54,13 +54,14 @@
  					   </el-option>
  					 </el-select>
 				</el-form-item>
+				
+				<el-form-item label="景点描述">
+					<el-input type="textarea" v-model="addFormSendData.attractionDescribe"></el-input>
+				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='[]'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
-				</el-form-item>
-				<el-form-item label="景点描述">
-					<el-input type="textarea" v-model="addFormSendData.attractionDescribe"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -87,13 +88,14 @@
  					  </el-option>
  	 				</el-select>
 				</el-form-item>
+				
+				<el-form-item label="景点描述">
+					<el-input type="textarea" v-model="editFormSendData.attractionDescribe"></el-input>
+				</el-form-item>
 				<el-form-item label="上传图片">
 					<upload-imgs 
 					:existImgList='existImgList'
 					@uploadedImgs='handleUploadedImgs'></upload-imgs>				
-				</el-form-item>
-				<el-form-item label="景点描述">
-					<el-input type="textarea" v-model="editFormSendData.attractionDescribe"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">

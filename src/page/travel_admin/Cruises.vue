@@ -28,6 +28,13 @@
 			</el-table-column>
 			<el-table-column align='center' prop="cruisesDoubleNum" label="游轮双人间数量">
 			</el-table-column>
+			
+			<el-table-column align='center' prop="cruisesLong" label="游轮长(米)">
+			</el-table-column>
+			<el-table-column align='center' prop="cruisesWidth" label="游轮宽(米)">
+			</el-table-column>
+			<el-table-column align='center' prop="cruisesHeight" label="游轮高(米)">
+			</el-table-column>
 			<el-table-column align='center' prop="cruisesIchnography" label="游轮平面图">
 				<!-- <template scope='scope'>
 					<template v-for='src in scope.row.cruisesIchnography'>
@@ -48,13 +55,6 @@
 					<DialogCarousel :pictures='scope.row.cruisesPicture'></DialogCarousel>
 				</template>
 			</el-table-column>
-			<el-table-column align='center' prop="cruisesLong" label="游轮长(米)">
-			</el-table-column>
-			<el-table-column align='center' prop="cruisesWidth" label="游轮宽(米)">
-			</el-table-column>
-			<el-table-column align='center' prop="cruisesHeight" label="游轮高(米)">
-			</el-table-column>
-		
 			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
 					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -95,16 +95,7 @@
 				<el-form-item label="游轮双人间数量">
 					<el-input-number v-model="addFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量"></el-input-number>
 				</el-form-item>
-				<el-form-item label="游轮平面图">
-					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs'></upload-imgs>
-				</el-form-item>
-				<el-form-item label="游轮图片">
-					<upload-imgs 
-					:existImgList='[]'
-					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
-				</el-form-item>
+				
 				<el-form-item label="游轮长">
 					<el-input-number v-model="addFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长"></el-input-number>(单位:米)
 				</el-form-item>
@@ -117,6 +108,16 @@
 					<el-input-number  v-model="addFormSendData.cruisesHeight" :controls="false"
 					placeholder="请输入游轮高"
 					:min='0'></el-input-number >(单位:米)
+				</el-form-item>
+				<el-form-item label="游轮平面图">
+					<upload-imgs 
+					:existImgList='[]'
+					@uploadedImgs='handleUploadedImgs'></upload-imgs>
+				</el-form-item>
+				<el-form-item label="游轮图片">
+					<upload-imgs 
+					:existImgList='[]'
+					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">

@@ -2,6 +2,7 @@
 <template>
 	<div class="login-wrapper">
 		<div class="title">欢迎进入运营后台</div>
+		<div class="title">Welcome to the operating background</div>
 		<el-form 
 		class="login-form" 
 		ref="loginForm" 
@@ -19,7 +20,7 @@
 		    placeholder="密码"></el-input>
 		  </el-form-item>
 		  <el-form-item style="width:100%;">
-     		<el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
+     		<el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit" :loading="logining">登录(login)</el-button>
      		<!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     	</el-form-item>
 		</el-form>
