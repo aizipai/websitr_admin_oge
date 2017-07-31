@@ -1,6 +1,6 @@
 
 
-const URL_PRE = ''
+const URL_PRE = '/api'
 
 const Login =URL_PRE +  '/user/login'//登录
 const Logout =URL_PRE +  '/user/logout'//退出
@@ -59,10 +59,17 @@ const GET_TOUR_LIST =URL_PRE +'/guide/findAllGuide'
 const ADD_TOUR =URL_PRE +'/guide/addFormValue'
 const DEL_TOUR =URL_PRE +'/guide/del/'
 
+//公共栏目
+const ADD_COMMON =URL_PRE + '/notiBoard/createNoticeBoard'
+const GET_LIST =URL_PRE + '/notiBoard/getNoticeBoardList'
+
 export default{
 
 	Login,
 	Logout,
+
+	ADD_COMMON,
+	GET_LIST,
 
 	GET_AREA,
 	UPLOAD_IMG,

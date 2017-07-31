@@ -19,6 +19,12 @@ import axios from 'axios'
 import API_URL from './api/index.js'
 
 import Filters from './filters/index.js'
+import BaiduMap from 'vue-baidu-map'
+
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: 'KSKGSa6No8AaippoVoRWzCGuffyBWvD3'
+})
 
 window.API_URL = API_URL //声明全局变量  
 

@@ -51,7 +51,7 @@
     <el-dialog title="添加部门" :visible.sync="addDepart" size='tiny'>
       <el-form :model="addDepartData" ref="addDepart" :inline="true">
         <el-form-item label="公司名称">
-          <el-select v-model="addDepartData.companyid" placeholder="请选择公司名称">
+          <el-select v-model="addDepartData.companyId" placeholder="请选择公司名称">
              <el-option
                v-for="item in companyData"
                :key="item.companyId"
@@ -73,7 +73,7 @@
     <el-dialog title="修改部门" :visible.sync="editDepart" size='tiny'>
       <el-form :model="editDepartData" ref="editDepart" :inline="true">
         <el-form-item label="公司名称">
-          <el-select v-model="editDepartData.companyid" placeholder="请选择公司名称">
+          <el-select v-model="editDepartData.companyId" placeholder="请选择公司名称">
              <el-option
                v-for="item in companyData"
                :key="item.companyId"
@@ -130,7 +130,7 @@
         },
 
         addDepartData:{
-          companyid:null,
+          companyId:null,
           departmentName:null,
         },
         editDepartData:{

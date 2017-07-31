@@ -166,6 +166,7 @@
 					attractionPicture:null,
 					tourLevel:null,
 					attractionDescribe:null,
+					adasd:null,
 				},
 				editFormRules: {},
 				editLoading:false,
