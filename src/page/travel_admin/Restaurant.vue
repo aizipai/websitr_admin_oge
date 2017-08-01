@@ -83,7 +83,7 @@
 				</el-form-item>
 				
 				<el-form-item label="座位数量">
-					<el-input-number v-model="addFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
+					<el-input-number v-model="addFormSendData.resSeatNum" placeholder="请输入座位数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="洗手间数量">
 					<el-input-number  v-model="addFormSendData.resToiletNum" 
@@ -135,7 +135,7 @@
 				</el-form-item>
 				
 				<el-form-item label="座位数量">
-					<el-input-number v-model="editFormSendData.resSeatNum" placeholder="请输入座位数量"></el-input-number>
+					<el-input-number v-model="editFormSendData.resSeatNum" placeholder="请输入座位数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="洗手间数量">
 					<el-input-number  v-model="editFormSendData.resToiletNum" 

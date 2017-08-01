@@ -87,17 +87,17 @@
 					<el-input v-model="addFormSendData.cruisesFacilities" placeholder="请输入游轮设施"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮总房间数">
-					<el-input-number v-model="addFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数"></el-input-number>
+					<el-input-number v-model="addFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮单人间数量">
-					<el-input-number v-model="addFormSendData.cruisesSimpleNum" placeholder="请输入游轮单人间数量"></el-input-number>
+					<el-input-number v-model="addFormSendData.cruisesSimpleNum" placeholder="请输入游轮单人间数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮双人间数量">
-					<el-input-number v-model="addFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量"></el-input-number>
+					<el-input-number v-model="addFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量" :min="0"></el-input-number>
 				</el-form-item>
 				
 				<el-form-item label="游轮长">
-					<el-input-number v-model="addFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长"></el-input-number>(单位:米)
+					<el-input-number v-model="addFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长" :min="0"></el-input-number>(单位:米)
 				</el-form-item>
 				<el-form-item label="游轮宽">
 					<el-input-number  v-model="addFormSendData.cruisesWidth" :controls="false"
@@ -149,13 +149,13 @@
 					<el-input v-model="editFormSendData.cruisesFacilities" placeholder="请输入游轮设施"></el-input>
 				</el-form-item>
 				<el-form-item label="游轮总房间数">
-					<el-input-number v-model="editFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数"></el-input-number>
+					<el-input-number v-model="editFormSendData.cruisesHomeNum" placeholder="请输入游轮总房间数" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮单人间数量">
-					<el-input-number v-model="editFormSendData.cruisesSimpleNum" placeholder="请输入游轮单人间数量"></el-input-number>
+					<el-input-number v-model="editFormSendData.cruisesSimpleNum" placeholder="请输入游轮单人间数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮双人间数量">
-					<el-input-number v-model="editFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量"></el-input-number>
+					<el-input-number v-model="editFormSendData.cruisesDoubleNum" placeholder="请输入游轮双人间数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="游轮平面图">
 					<upload-imgs 
@@ -168,7 +168,7 @@
 					@uploadedImgs='handleUploadedImgs2'></upload-imgs>
 				</el-form-item>
 				<el-form-item label="游轮长">
-					<el-input-number v-model="editFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长"></el-input-number>(单位:米)
+					<el-input-number v-model="editFormSendData.cruisesLong" :controls="false" placeholder="请输入游轮长" :min="0"></el-input-number>(单位:米)
 				</el-form-item>
 				<el-form-item label="游轮宽">
 					<el-input-number  v-model="editFormSendData.cruisesWidth" :controls="false"

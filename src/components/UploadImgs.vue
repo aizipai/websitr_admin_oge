@@ -46,19 +46,20 @@
 					alert('最多上传9张图片')
 					return
 				}
-				this.$emit('uploadedImgs',this.imgsListToOut)
+				console.log(this.imgsList)
+				this.$emit('uploadedImgs',this.imgsList)
 			},
 			handleRemove(file,fileList){
 
 				const target_url = file.response ? file.response['url'] : file['url']
 
 			
-				const arr = this.imgsListToOut.filter((sig_img_url)=>{
+				this.imgsList = this.imgsList.filter((sig_img_url)=>{
 					
 					return sig_img_url!= target_url
 				})
-				
-				this.$emit('uploadedImgs',arr)
+				console.log(this.imgsList)
+				this.$emit('uploadedImgs',this.imgsList)
 				
 			},
 			submitUpload(){
@@ -69,7 +70,7 @@
 		computed:{
 			//上传后传出去的图片列表
 			imgsListToOut(){
-				return this.imgsList.concat(this.existImgList)
+				return this.imgsList
 			},
 			// 处理传进来的arr为组件可用的arr
 			existImgListShow(){
@@ -81,6 +82,9 @@
 				})
 				return existImgListShow
 			}
+		},
+		mounted(){
+			this.imgsList = this.imgsList.concat(this.existImgList)
 		}
 	}
 	

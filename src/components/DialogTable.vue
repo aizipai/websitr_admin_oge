@@ -1,24 +1,22 @@
 <template>
     <div>
-		<el-button type="text" @click="dialogVisible = true">查看图片</el-button>
+		<el-button type="text" @click="dialogVisible = true">查看权限详情</el-button>
 		
 		<el-dialog
-		  title="图片展示"
+		  title="授权"
 		  :visible.sync="dialogVisible"
 		  size="small"
 		  :show-close='false'
 		  >
-      <template v-if="pictures.length>0">
-        <el-carousel :interval="4000" type="card" height="200px" trigger="click">
-       <el-carousel-item v-for="item in pictures" :key="item">
-         <img class="carousel-img" :src="item">
-       </el-carousel-item>
-     </el-carousel>
-      </template>
-      <template v-else>
-        目前还木有图片呐！
-      </template>
-		  
+
+       <el-table :data="tableDataTran" max-height="300">
+        <el-table-column property="companyId" label="授权公司" ></el-table-column>
+        <el-table-column property="departmentId" label="授权部门" ></el-table-column>
+        <el-table-column property="islooked" label="是否可见"></el-table-column>
+        <el-table-column property="isupdate" label="是否可改"></el-table-column>
+      </el-table>
+
+		 
 
 		  <span slot="footer" class="dialog-footer">
 		    <el-button @click="dialogVisible = false">关闭</el-button>
@@ -31,11 +29,9 @@
   export default {
 
   	props:{
-  		pictures:{
+  		tableData:{
   			type: [String, Array, Object],
-  			default(){
-  				return ["http://47.94.218.61/images/2017/07/16/2017071603202882305673.jpg",]
-  			}
+  			
   		}
   	},
     data() {
@@ -58,11 +54,24 @@
       }
     },
     computed:{
-      // _picture(){
-      //   if(Object.prototype.toString.call(this.pictures) == '[object Object]'){
-      //     console.log(111)
-      //   }
-      // }
+      tableDataTran(){
+        this.tableData.forEach(sig_data =>{
+          if(sig_data['islooked']==1){
+              sig_data['islooked'] = '是'
+          }
+          if(sig_data['islooked']==0){
+              sig_data['islooked'] = '否'
+          }
+          if(sig_data['isupdate']==1){
+              sig_data['isupdate'] = '是'
+          }
+          if(sig_data['isupdate']==0){
+              sig_data['isupdate'] = '否'
+          }
+        })
+        return this.tableData
+
+      }
     },
     mounted(){
      

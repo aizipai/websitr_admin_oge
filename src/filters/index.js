@@ -15,8 +15,17 @@ const formatDate=(time, fmt)=> {
 				
 			}
 
+const transformYN = (value)=>{
+	if(value == 1){
+		return '是'
+	}else if(value == 0){
+		return '否'
+	}
+}
+
 export default{
 	handleLevel,
-	formatDate
+	formatDate,
+	transformYN
 }
 

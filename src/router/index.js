@@ -83,7 +83,7 @@ export default new Router({
         name: '导航四',
         iconCls: 'el-icon-message',//图标样式class
         children: [
-            {path: 'MeetingCont',index:0,component: MeetingCont,name: '开会内容'},
+            {path: 'MeetingCont',component: MeetingCont,name: '开会内容'},
             {path: 'TempNotice',component: TempNotice,name: '临时公告'},
             {path: 'Trip',component: Trip,name: '行程'},
             {path: 'SelfTable',component: SelfTable,name: '自费表格'},

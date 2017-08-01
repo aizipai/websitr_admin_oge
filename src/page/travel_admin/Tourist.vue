@@ -106,7 +106,7 @@
 					<el-input v-model="addFormSendData.nameE"></el-input>
 				</el-form-item>
 				<el-form-item label="年龄(岁)">
-					<el-input-number v-model="addFormSendData.guideAge" :min="20" :max="30"></el-input-number>
+					<el-input-number v-model="addFormSendData.guideAge" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="addFormSendData.guideGender">
@@ -115,7 +115,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="经验(年)">
-					<el-input-number v-model="addFormSendData.guideExperiences" :min="20" :max="30"></el-input-number>
+					<el-input-number v-model="addFormSendData.guideExperiences" :min="0" ></el-input-number>
 				</el-form-item>
 				<el-form-item label="自我介绍">
   				  <el-input type="textarea" v-model="addFormSendData.guideSelfDescription"></el-input>
@@ -177,7 +177,7 @@
 					<el-input v-model="editFormSendData.nameE"></el-input>
 				</el-form-item>
 				<el-form-item label="年龄(岁)">
-					<el-input-number v-model="editFormSendData.guideAge" :min="20" :max="30"></el-input-number>
+					<el-input-number v-model="editFormSendData.guideAge" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="editFormSendData.guideGender">
@@ -186,7 +186,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="经验(年)">
-					<el-input-number v-model="editFormSendData.guideExperiences" :min="20" :max="30"></el-input-number>
+					<el-input-number v-model="editFormSendData.guideExperiences" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="自我介绍">
   				  <el-input type="textarea" v-model="editFormSendData.guideSelfDescription"></el-input>
@@ -395,6 +395,7 @@
 
 				var _url = form+'Url',
 						_params = form+'SendData'
+						console.log(this.imgsArr1)
 				this[_params]['guideLicense'] = this.arrToStr(this.imgsArr1) || this.arrToStr(this.existImgList1)		
 				this[_params]['guideSelfPicture'] = this.arrToStr(this.imgsArr2) || this.arrToStr(this.existImgList2)		
 				this[_params]['guidePicture'] = this.arrToStr(this.imgsArr3) || this.arrToStr(this.existImgList3)	

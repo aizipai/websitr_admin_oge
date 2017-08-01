@@ -6,7 +6,7 @@
 				class="add-hotel"
   				type="primary" 
   				size="small" 
-  				@click="addFormVisible = true">添加</el-button>
+  				@click="addFormVisible = true;visibleMap=false">添加</el-button>
 		</div>
 		
 		<!-- 列表部分 -->
@@ -83,9 +83,16 @@
 				<el-form-item label="酒店名称">
 					<el-input v-model="addFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
 				</el-form-item>
+				<el-form-item label="酒店地址">
+					<el-input type="text" @focus="visibleMap = true" readonly :value='addFormSendData.address'></el-input>
+					<DialogMap
+					 :visibleMap ='visibleMap'
+					 @onClose = 'closeDialogMap'
+					 @onConfrim = 'confrimDialogMap'></DialogMap>
+				</el-form-item>
 				
 				<el-form-item label="房间数量">
-					<el-input-number v-model="addFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
+					<el-input-number v-model="addFormSendData.hotelHomeNum" placeholder="请输入房间数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="包房数量">
 					<el-input-number  v-model="addFormSendData.hotelCharteredRoomNum" 
@@ -140,9 +147,16 @@
 				<el-form-item label="酒店名称">
 					<el-input v-model="editFormSendData.hotelName" placeholder="请输入酒店名称"></el-input>
 				</el-form-item>
+				<el-form-item label="酒店地址">
+					<el-input type="text" @focus="visibleMap = true" readonly :value='editFormSendData.hotelMapUrl'></el-input>
+					<DialogMap
+					 :visibleMap ='visibleMap'
+					 @onClose = 'closeDialogMap'
+					 @onConfrim = 'confrimDialogMap'></DialogMap>
+				</el-form-item>
 				
 				<el-form-item label="房间数量">
-					<el-input-number v-model="editFormSendData.hotelHomeNum" placeholder="请输入房间数量"></el-input-number>
+					<el-input-number v-model="editFormSendData.hotelHomeNum" placeholder="请输入房间数量" :min="0"></el-input-number>
 				</el-form-item>
 				<el-form-item label="包房数量">
 					<el-input-number  v-model="editFormSendData.hotelCharteredRoomNum" 
@@ -178,13 +192,18 @@
 <script>
 	import UploadImgs from '../../components/UploadImgs.vue'
 	import DialogCarousel from '../../components/DialogCarousel.vue'
+	import DialogMap from '../../components/DialogMap.vue'
 	export default{
 		components:{
 			UploadImgs,
-			DialogCarousel
+			DialogCarousel,
+			DialogMap
 		},
 		data(){
 			return{
+				
+				visibleMap:false,
+
 				dialogImageUrl:'',
 				imgDialogVisible: false,
 
@@ -228,6 +247,8 @@
 					tourLevel:'',
 					hotelPicture:'',
 					hotelAreaId:'',
+					address:'',
+					hotelMapUrl:''
 				},
 
 				//上传图片部分
@@ -245,6 +266,8 @@
 					tourLevel:'',
 					hotelPicture:'',
 					hotelAreaId:'',
+					address:'',
+					hotelMapUrl:''
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -255,6 +278,16 @@
 			}
 		},
 		methods:{
+			confrimDialogMap(val){
+				this.addFormSendData.address = val.address
+				this.editFormSendData.address = val.address
+				this.addFormSendData.hotelMapUrl = val.lng+','+val.lat
+				this.editFormSendData.hotelMapUrl = val.lng+','+val.lat
+				this.visibleMap = false
+			},
+			closeDialogMap(){
+				this.visibleMap = false
+			},
 			showBigImg(src){
 				this.dialogImageUrl = src,
 				this.imgDialogVisible = true
@@ -377,6 +410,7 @@
 						hotelRestaurantName:row_data.hotelRestaurantName,
 						tourLevel:row_data.tourLevel,
 						hotelAreaId:row_data.hotelAreaId,
+						hotelMapUrl:row_data.hotelMapUrl,
 						hotelPicture: row_data.hotelPicture?row_data.hotelPicture.split(',') : [],
 					}
 					_data.push(_row_data)

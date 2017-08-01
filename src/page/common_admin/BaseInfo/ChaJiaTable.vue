@@ -11,21 +11,33 @@
 		
 		<!-- 列表部分 -->
 		<el-table :data="allData" highlight-current-row v-loading="listLoading"  style="width: 100%;" max-height="500">
-			<el-table-column align='center' prop="carId" label="ID">
+			
+
+			<el-table-column align='center' prop="" label="ID">
+				<template scope = 'scope'>
+					{{scope.row.noticeBoard.notiId}}
+				</template>
+			</el-table-column>
+			<!-- <el-table-column align='center' prop="" label="名称">
+				<template scope = 'scope'>
+					{{scope.row.noticeBoard.notiId}}
+				</template>
+			</el-table-column> -->
+			
+			<el-table-column align='center' prop="" label="权限信息">
+				<template scope='scope'>
+				 <DialogTable :tableData= 'scope.row.permissions'></DialogTable>
+				</template>
 			</el-table-column>
 			
-			<el-table-column align='center' prop="carName" label="授权公司">
-			</el-table-column>
-			<el-table-column align='center' prop="carNo" label="授权部门">
-			</el-table-column>
-			<el-table-column align='center' prop="carPicture" :label="$route.name+'图片'">
+			<el-table-column align='center' prop="" :label="$route.name+'图片'">
 				<template scope='scope'> 
-					<DialogCarousel :pictures='scope.row.carPicture'></DialogCarousel>
+					<DialogCarousel :pictures='scope.row.noticeBoard.notiBalanceSheet? scope.row.noticeBoard.notiBalanceSheet.split(",") : []'></DialogCarousel>
 				</template>	
 			</el-table-column>
 			<el-table-column align='center' label="操作" width="150"  fixed="right">
 				<template scope="scope">
-					<el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button>
+					<!-- <el-button size="small" @click.native="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
@@ -36,53 +48,21 @@
 		<el-dialog title="新增" 
 		:visible.sync="addFormVisible"
 		ref="addFormDialog">
+
 			<el-form :model="addFormSendData" label-width="150px" ref="addForm" >
-				
-				<el-form-item label="授权公司">
-					<el-select v-model="sigPermission.companyId" @change='doGetDepartmentData(sigPermission.companyId)' placeholder="请选择公司名称">
-          		      <el-option
-          		        v-for="item in companyData"
-          		        :key="item.companyId"
-          		        :label="item.companyName"
-          		        :value="item.companyId"
-          		        >
-          		      </el-option>
-          		    </el-select>
-				</el-form-item>
-
-				<el-form-item label="授权部门">
-					<el-select v-model="sigPermission.departmentId" placeholder="请选择公司名称">
-          		      <el-option
-          		        v-for="item in departData"
-          		        :key="item.departmentId"
-          		        :label="item.departmentName"
-          		        :value="item.id"
-          		        >
-          		      </el-option>
-          		    </el-select>
-
-          		    <!-- <el-checkbox-group v-model="sigPermission.departmentId">
-    					<el-checkbox v-for="item in departData" :label="item.id" :key="item.departmentId">{{item.departmentName}}</el-checkbox>
-  					</el-checkbox-group> -->
-				</el-form-item>
-
-				<el-form-item label="是否可见">
-					<el-radio class="radio" v-model="sigPermission.islooked" label="1">是</el-radio>
-  					<el-radio class="radio" v-model="sigPermission.islooked" label="0">否</el-radio>
-				</el-form-item>
-
-				<el-form-item label="是否可修改">
-					<el-radio class="radio" v-model="sigPermission.isupdate" label="1">是</el-radio>
-  					<el-radio class="radio" v-model="sigPermission.isupdate" label="0">否</el-radio>
-				</el-form-item>
+				<AddCD @dataCAD ='pushItemData'></AddCD>
 
 				
-				<el-form-item label="">
-					<el-button type="primary" @click='pushItemData' style='width:300px;margin-left:-100px'>添加</el-button>
-				</el-form-item>
-				
+				<!-- <el-form-item label="已添加：">
+					<template v-for='sigPer in addFormSendData.permission'>
+						<div>公司id：{{sigPer['companyId']}}/部门id：{{sigPer['departmentId']}}/是否可见：{{sigPer['islooked']}}/是否可修改：{{sigPer['isupdate']}}</div>
+						<div></div>
+
+					</template>
+				</el-form-item> -->
+
 				<el-form-item :label="$route.name+'名称'">
-					<el-input v-model="addFormSendData.carType" :placeholder="$route.name+'名称'"></el-input>
+					<el-input v-model="addFormSendData.noticeBoard.notiBalanceSheet" :placeholder="$route.name+'名称'"></el-input>
 				</el-form-item>
 				<el-form-item :label="$route.name+'图片'">
 					<upload-imgs 
@@ -96,6 +76,9 @@
 			</div>
 		</el-dialog>
 
+		
+
+
 	
 		<el-dialog v-model="imgDialogVisible" size="tiny">
 			<img width="100%" :src="dialogImageUrl" alt="">
@@ -108,10 +91,14 @@
 <script>
 	import UploadImgs from '../../../components/UploadImgs.vue'
 	import DialogCarousel from '../../../components/DialogCarousel.vue'
+	import DialogTable from '../../../components/DialogTable.vue'
+	import AddCD from '../../../components/AddCD.vue'
 	export default{
 		components:{
 			UploadImgs,
-			DialogCarousel
+			DialogCarousel,
+			DialogTable,
+			AddCD
 		},
 		data(){
 			return{
@@ -125,7 +112,7 @@
 
 				getAllDataUrl: API_URL['GET_LIST'],
 				getAllDataParams: {
-					parentId:0
+					parentId:3
 				},
 				imgWidth:'100px',
 				imgHeight:'100px',
@@ -154,14 +141,14 @@
 				addFormUrl: API_URL['ADD_COMMON'],
 				addFormSendData:{
 					noticeBoard:{
-						parentId: 0,
-						notiMeeting:null,
+						parentId: 3,
+						notiBalanceSheet:null,
 					},
 					permission: []
 				},
 				sigPermission:{
 					"companyId": null,
-            		"departmentId": null,
+            		"departmentId": [],
             		"islooked": null,
             		"isupdate":null
 				},
@@ -175,15 +162,7 @@
 				//编辑数据
 				editFormVisible:false,
 				editFormSendData: {
-					carId:'',
-					carName:'',
-					carPicture:'',
-					carNo:'',
-					carType:'',
-					carSeatNum:'',
-					carLuggageNum:'',
-					carRemark:'',
-					tourLevel:''
+					
 				},
 				editFormRules: {},
 				editLoading:false,
@@ -195,23 +174,9 @@
 			}
 		},
 		methods:{
-			
-			pushItemData(){
-				const _sigPermission = {}
-				for(let key in this.sigPermission){
-					_sigPermission[key] = this.sigPermission[key]
-				}
-				this.addFormSendData.permission.push(_sigPermission)
-				this.$alert('添加成功，可继续添加授权公司和部门', '提示', {
-        		  confirmButtonText: '确定',
-        		  callback: action => {
-        		    for(let key in this.sigPermission){
-        		    	// if(key != '')
-        		    	 this.sigPermission[key]= null
-        		    }
-        		  }
-        		});
-			},
+   			pushItemData(val){
+   				this.addFormSendData.permission.push(val)
+   			},
 			doGetDepartmentData(c_id,resolve){
 				if(c_id === null){return}
      		  this.$axios.get(this.getDepartmentUrl+c_id).then((res)=>{
@@ -290,7 +255,7 @@
 				var _url = form+'Url',
 						_params = form+'SendData'
 						
-				this[_params]['noticeBoard']['notiMeeting'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
+				this[_params]['noticeBoard']['notiBalanceSheet'] = this.arrToStr(this.imgsArr) || this.arrToStr(this.existImgList)					
 				this.$refs[form].validate((valid)=>{
 					if(valid){
 						this.$axios.post(this[_url],this[_params]).then((res)=>{
@@ -327,6 +292,7 @@
 					this.listLoading = false
 					var result = res.data
 					// this.allData = this.handleData(result.data)
+					this.allData = result.data
 					console.log(result)
 				})
 			},
@@ -358,7 +324,7 @@
 			},
 		},
 		mounted(){
-			// this.getAllData()
+			this.getAllData()
 			this.doGetCompanyData()
 		}
 	}
